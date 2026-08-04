@@ -1,0 +1,26 @@
+$kind: http-request
+name: New Request
+description: ""
+url: http://192.168.1.6:5000/api/admin/register
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \  \"name\": \"Admin\",\r
+
+    \  \"email\": \"admin@gmail.com\",\r
+
+    \  \"password\": \"12345678\"\r
+
+    }"
+auth:
+  type: bearer
+  credentials:
+    token: "{{json_web_token_0udc}}"
+settings:
+  strictSSL: false
+  followRedirects: true
+  disableCookies: false
+  maxResponseSize: 52428800
+order: 2455097510267540

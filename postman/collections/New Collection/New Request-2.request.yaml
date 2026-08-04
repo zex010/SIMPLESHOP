@@ -1,0 +1,20 @@
+$kind: http-request
+name: New Request
+url: http://192.168.1.6:5000/api/auth/profile
+method: GET
+body:
+  type: json
+  content: "{\r
+
+    \  \r
+
+    \ \r
+
+    \  \"email\": \"ali@gmail.com\",\r
+
+    \  \"password\": \"123456\"\r
+
+    \r
+
+    }\r\n"
+order: 1348058182860470

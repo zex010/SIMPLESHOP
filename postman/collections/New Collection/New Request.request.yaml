@@ -1,0 +1,20 @@
+$kind: http-request
+name: New Request
+url: http://192.168.1.6:5000/api/auth/register
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \  \"name\": \"Ali\",\r
+
+    \  \"email\": \"ali@gmail.com\",\r
+
+    \  \"phoneNumber\": \"03001234567\",\r
+
+    \  \"address\": \"Lahore\",\r
+
+    \  \"password\": \"123456\"\r
+
+    }"
+order: 2000

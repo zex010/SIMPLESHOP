@@ -1,0 +1,16 @@
+$kind: http-request
+name: New Request
+url: |-
+  POST
+  http://192.168.1.6:5000/api/auth/login
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \  \"email\":\"alikhan11@gmail.com\",\r
+
+    \  \"password\":\"123456\"\r
+
+    }"
+order: 201355154163574
