@@ -120,9 +120,32 @@ app.use("/api/orders", orderRoutes);
 app.use("/api/admin", adminRoutes);
 
 // Health check
+// Health check
 app.get("/", (req, res) => {
   res.send("API is running");
 });
+
+// TEMPORARY IMAGE TEST
+app.get("/test-image", (req, res) => {
+  const fs = require("fs");
+
+  const imagePath = path.join(
+    __dirname,
+    "uploads",
+    "products",
+    "aventus (1).jpg"
+  );
+
+  console.log("Testing image:", imagePath);
+  console.log("Image exists:", fs.existsSync(imagePath));
+
+  res.json({
+    imagePath,
+    exists: fs.existsSync(imagePath),
+  });
+});
+
+// 404 handler
 
 // 404 handler
 app.use((req, res) => {
