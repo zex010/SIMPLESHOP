@@ -18,7 +18,7 @@ function ProductCard({ product }) {
       <Link to={`/product/${product._id}`}>
         <div className="aspect-square w-full overflow-hidden bg-[#FAF9F6] flex items-center justify-center rounded-sm">
           <img
-            src={`http://192.168.1.6:5000${product.image}`}
+            src={`http://localhost:5000${product.image}`}
             alt={product.name}
             className="
               h-full

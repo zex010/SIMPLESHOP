@@ -10,7 +10,7 @@ function resolveImageSrc(src) {
   if (!src) return "";
   return src.startsWith("http")
     ? src
-    : `http://192.168.1.6:5000${src}`;
+    : `http://localhost:5000${src}`;
 }
 
 

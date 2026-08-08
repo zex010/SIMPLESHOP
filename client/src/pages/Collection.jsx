@@ -8,7 +8,7 @@ function Collection() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch("http://192.168.1.6:5000/api/products")
+    fetch("http://localhost:5000/api/products")
       .then((res) => res.json())
       .then((data) => {
         setProducts(data.products);
@@ -66,7 +66,7 @@ function Collection() {
   )}
 
   <img
-    src={`http://192.168.1.6:5000${product.image}`}
+    src={`http://localhost:5000${product.image}`}
     alt={product.name}
     className="w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
   />

@@ -5,7 +5,7 @@ const ShopContext = createContext();
 
 const CART_STORAGE_KEY = "avernus_cart";
 const WISHLIST_STORAGE_KEY = "avernus_wishlist";
-const API_URL = "http://192.168.1.6:5000/api"; // Adjust based on backend port
+const API_URL = "http://localhost:5000/api"; // Adjust based on backend port
 
 // Helper to get auth config
 const getAuthConfig = () => {

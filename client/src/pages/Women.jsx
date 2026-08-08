@@ -8,7 +8,7 @@ function Women() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch("http://192.168.1.6:5000/api/products")
+    fetch("http://localhost:5000/api/products")
       .then((res) => res.json())
       .then((data) => {
         const womenProducts = data.products.filter(
@@ -77,7 +77,7 @@ function Women() {
 
                 <div className="w-full h-[420px] overflow-hidden bg-[#f7f7f7]">
                   <img
-                    src={`http://192.168.1.6:5000${product.image}`}
+                    src={`http://localhost:5000${product.image}`}
                     alt={product.name}
                     className="w-full h-full object-cover object-center transition duration-700 group-hover:scale-105"
                   />

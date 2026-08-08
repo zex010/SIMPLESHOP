@@ -1,34 +1,33 @@
+//const Product = require("../models/Product");
+console.log("🔥 PRODUCT CONTROLLER LOADED");
 const Product = require("../models/Product");
-
+const mongoose = require("mongoose");
 
 // =======================
 // Get All Products (Admin)
 // =======================
 const getAllProducts = async (req, res) => {
   try {
+    console.log("HOST:", mongoose.connection.host);
+    console.log("DATABASE:", mongoose.connection.name);
+    console.log("COLLECTION:", Product.collection.name);
+    console.log("COUNT:", await Product.countDocuments());
 
-    const products = await Product.find()
-      .sort({ createdAt: -1 });
-
+    const products = await Product.find().sort({ createdAt: -1 });
 
     res.status(200).json({
       success: true,
       products,
     });
-
-
   } catch (error) {
-
     console.log("Get Products Error:", error);
 
     res.status(500).json({
       success: false,
       message: error.message,
     });
-
   }
 };
-
 
 
 

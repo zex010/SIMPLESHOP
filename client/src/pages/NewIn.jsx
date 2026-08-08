@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 
-const API_URL = "http://192.168.1.6:5000";
+const API_URL = "http://localhost:5000";
 
 function NewArrivals() {
   const [products, setProducts] = useState([]);
