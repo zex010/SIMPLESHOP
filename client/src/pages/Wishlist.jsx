@@ -12,7 +12,7 @@ const FALLBACK_IMAGE = "https://placehold.co/400x400/f5f5f4/78716c?text=No+Image
 function resolveImageSrc(product) {
   const src = product?.image || product?.images?.[0];
   if (!src) return FALLBACK_IMAGE;
-  return src.startsWith("http") ? src : `http://localhost:5000/${src.replace(/^\/+/, "")}`;
+  return src.startsWith("http") ? src : `http://192.168.10.6:5000/${src.replace(/^\/+/, "")}`;
 }
 
 function Wishlist() {

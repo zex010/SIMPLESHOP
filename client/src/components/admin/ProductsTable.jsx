@@ -6,7 +6,7 @@ const resolveImage = (src) => {
 
   if (src.startsWith("http")) return src;
 
-  return `http://localhost:5000${src}`;
+  return `http://192.168.10.6:5000${src}`;
 };
 
 export default function ProductsTable({

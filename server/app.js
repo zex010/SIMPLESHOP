@@ -21,7 +21,7 @@
 // app.use(express.urlencoded({ extended: true }));
 
 // // Serve product images. Files here are reachable at
-// // http://localhost:5000/uploads/<filename> — matches the
+// // http://192.168.10.6:5000/uploads/<filename> — matches the
 // // `product.image` paths used across the frontend (e.g. "/uploads/foo.jpg").
 // // Adjust "uploads" below if your images actually live in a different folder.
 // app.use("/uploads", express.static(path.join(__dirname, "uploads")));
@@ -159,7 +159,7 @@ mongoose
     console.log("MongoDB Host:", mongoose.connection.host);
     console.log("MongoDB Database:", mongoose.connection.name);
 
-    app.listen(PORT, () => {
+    app.listen(PORT, "0.0.0.0", () => {
       console.log(`Server running on port ${PORT}`);
     });
   })

@@ -84,7 +84,7 @@ function ProductPreviewModal({ product, closeModal }) {
         {/* IMAGE SECTION */}
         <div className="relative bg-black p-0 overflow-hidden h-64 lg:h-full">
           <img
-            src={`http://localhost:5000${activeImage}`}
+            src={`http://192.168.10.6:5000${activeImage}`}
             alt={product.name}
             className="w-full h-full object-cover"
           />

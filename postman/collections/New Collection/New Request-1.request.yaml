@@ -2,7 +2,7 @@ $kind: http-request
 name: New Request
 url: |-
   POST
-  http://localhost:5000/api/auth/login
+  http://192.168.10.6:5000/api/auth/login
 method: POST
 body:
   type: json

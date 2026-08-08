@@ -23,7 +23,7 @@ const resolveImage = (image) => {
   if (src.startsWith("http")) return src;
   // Strip any leading slash before re-adding exactly one, so paths like
   // "/uploads/products/x.jpg" don't become a broken double-slash URL.
-  return `http://localhost:5000/${src.replace(/^\/+/, "")}`;
+  return `http://192.168.10.6:5000/${src.replace(/^\/+/, "")}`;
 };
 
 // Helper to format MongoDB timestamp

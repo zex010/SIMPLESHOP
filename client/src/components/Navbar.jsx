@@ -52,7 +52,7 @@ export default function Navbar() {
     if (!searchOpen || productsLoaded || productsLoading) return;
 
     setProductsLoading(true);
-    fetch("http://localhost:5000/api/products")
+    fetch("http://192.168.10.6:5000/api/products")
       .then((res) => res.json())
       .then((data) => {
         setAllProducts(data.products || []);
@@ -321,7 +321,7 @@ export default function Navbar() {
                         >
                           <div className="h-14 w-14 md:h-16 md:w-16 shrink-0 overflow-hidden bg-[#f8f8f8]">
                             <img
-                              src={`http://localhost:5000${product.image}`}
+                              src={`http://192.168.10.6:5000${product.image}`}
                               alt={product.name}
                               className="h-full w-full object-cover object-center transition-transform duration-500 group-hover:scale-105"
                             />

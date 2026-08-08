@@ -28,7 +28,7 @@ const resolveImage = (image) => {
   if (!src) return FALLBACK_IMAGE;
   if (src.startsWith("http")) return src;
   // Handle leading slashes: strip them first, then append to base URL
-  return `http://localhost:5000/${src.replace(/^\/+/, "")}`;
+  return `http://192.168.10.6:5000/${src.replace(/^\/+/, "")}`;
 };
 
 const PAYMENT_METHODS = [
