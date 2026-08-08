@@ -1,6 +1,6 @@
 $kind: http-request
 name: New Request
-url: http://192.168.10.6:5000/api/auth/profile
+url: https://avernus-api.onrender.com/api/auth/profile
 method: GET
 body:
   type: json

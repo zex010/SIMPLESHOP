@@ -1,7 +1,7 @@
 $kind: http-request
 name: New Request
 description: ""
-url: http://192.168.10.6:5000/api/admin/register
+url: https://avernus-api.onrender.com/api/admin/register
 method: POST
 body:
   type: json

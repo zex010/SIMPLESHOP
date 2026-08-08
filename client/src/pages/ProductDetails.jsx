@@ -136,7 +136,7 @@ function resolveImageSrc(src) {
     return src;
   }
 
-  return `http://192.168.10.6:5000/${src.replace(/^\/+/, "")}`;
+  return `https://avernus-api.onrender.com/${src.replace(/^\/+/, "")}`;
 }
 
 function ProductDetails() {
@@ -159,7 +159,7 @@ function ProductDetails() {
     setLoading(true);
     setActiveImage(0);
 
-    fetch(`http://192.168.10.6:5000/api/products/${id}`)
+    fetch(`https://avernus-api.onrender.com/api/products/${id}`)
       .then((res) => {
         if (!res.ok) throw new Error("Product not found");
         return res.json();

@@ -1,7 +1,7 @@
 // import axios from "axios";
 
 // const api = axios.create({
-//   baseURL: "http://192.168.10.6:5000/api",
+//   baseURL: "https://avernus-api.onrender.com/api",
 // });
 
 // export default api;

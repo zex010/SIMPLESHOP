@@ -24,7 +24,7 @@ build/
 .vite/
 
 # Uploads (user/product images)
-server/uploads/
+# server/uploads/
 
 # Local files
 *.local

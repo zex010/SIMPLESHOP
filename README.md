@@ -135,7 +135,7 @@ node app.js
 The backend runs on:
 
 ```text
-http://192.168.10.6:5000
+https://avernus-api.onrender.com
 ```
 
 ### Start Frontend

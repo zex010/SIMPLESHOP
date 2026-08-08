@@ -2,7 +2,7 @@ $kind: http-request
 name: New Request
 url: |-
   POST
-  http://192.168.10.6:5000/api/auth/login
+  https://avernus-api.onrender.com/api/auth/login
 method: POST
 body:
   type: json

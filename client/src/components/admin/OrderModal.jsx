@@ -32,7 +32,7 @@ const formatAddress = (address) => {
 const resolveImage = (src) => {
   if (!src) return "";
   if (src.startsWith("http")) return src;
-  return `http://192.168.10.6:5000${src}`;
+  return `https://avernus-api.onrender.com${src}`;
 };
 
 export default function OrderModal({ order, onClose, onApprove, onReject }) {

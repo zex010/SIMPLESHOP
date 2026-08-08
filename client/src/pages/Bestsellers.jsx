@@ -9,7 +9,7 @@ function BestSellers() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch("http://192.168.10.6:5000/api/products")
+    fetch("https://avernus-api.onrender.com/api/products")
       .then((res) => res.json())
       .then((data) => {
         const all = data.products || [];
@@ -73,7 +73,7 @@ function BestSellers() {
                     #{index + 1} Best Seller
                   </span>
                   <img
-                    src={`http://192.168.10.6:5000${product.image}`}
+                    src={`https://avernus-api.onrender.com${product.image}`}
                     alt={product.name}
                     className="w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
                   />

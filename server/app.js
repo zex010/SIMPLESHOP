@@ -21,7 +21,7 @@
 // app.use(express.urlencoded({ extended: true }));
 
 // // Serve product images. Files here are reachable at
-// // http://192.168.10.6:5000/uploads/<filename> — matches the
+// // https://avernus-api.onrender.com/uploads/<filename> — matches the
 // // `product.image` paths used across the frontend (e.g. "/uploads/foo.jpg").
 // // Adjust "uploads" below if your images actually live in a different folder.
 // app.use("/uploads", express.static(path.join(__dirname, "uploads")));
