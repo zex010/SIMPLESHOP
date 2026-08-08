@@ -5,15 +5,25 @@
 // });
 
 // export default api;
-
 import axios from "axios";
 
 const API_URL =
   import.meta.env.VITE_API_URL ||
-  `http://${window.location.hostname}:5000/api`;
+  "https://avernus-api.onrender.com/api";
 
 const api = axios.create({
   baseURL: API_URL,
 });
 
 export default api;
+// import axios from "axios";
+
+// const API_URL =
+//   import.meta.env.VITE_API_URL ||
+//   `http://${window.location.hostname}:5000/api`;
+
+// const api = axios.create({
+//   baseURL: API_URL,
+// });
+
+// export default api;
