@@ -1,26 +1,75 @@
-//const Product = require("../models/Product");
 console.log("🔥 PRODUCT CONTROLLER LOADED");
+
 const Product = require("../models/Product");
 const mongoose = require("mongoose");
 
+const {
+  r2,
+  PutObjectCommand,
+  BUCKET_NAME,
+} = require("../config/r2");
+
 // =======================
-// Get All Products (Admin)
+// R2 UPLOAD HELPER
 // =======================
+
+const uploadToR2 = async (file) => {
+  const safeName = file.originalname
+    .replace(/\s+/g, "-")
+    .replace(/[^a-zA-Z0-9._-]/g, "");
+
+  const key = `products/${Date.now()}-${safeName}`;
+
+  await r2.send(
+    new PutObjectCommand({
+      Bucket: BUCKET_NAME,
+      Key: key,
+      Body: file.buffer,
+      ContentType: file.mimetype,
+    })
+  );
+
+  /*
+    R2 public URL.
+
+    IMPORTANT:
+    This requires your R2 bucket to have a public/custom
+    domain configured.
+
+    We will configure this after the upload itself works.
+  */
+
+  const publicUrl =
+    `${process.env.R2_PUBLIC_URL}/${key}`;
+
+  return publicUrl;
+};
+
+// =======================
+// GET ALL PRODUCTS
+// =======================
+
 const getAllProducts = async (req, res) => {
   try {
     console.log("HOST:", mongoose.connection.host);
     console.log("DATABASE:", mongoose.connection.name);
     console.log("COLLECTION:", Product.collection.name);
-    console.log("COUNT:", await Product.countDocuments());
+    console.log(
+      "COUNT:",
+      await Product.countDocuments()
+    );
 
-    const products = await Product.find().sort({ createdAt: -1 });
+    const products = await Product
+      .find()
+      .sort({ createdAt: -1 });
 
     res.status(200).json({
       success: true,
       products,
     });
+
   } catch (error) {
-    console.log("Get Products Error:", error);
+    console.log("❌ GET PRODUCTS ERROR:", error);
 
     res.status(500).json({
       success: false,
@@ -29,15 +78,14 @@ const getAllProducts = async (req, res) => {
   }
 };
 
-
-
 // =======================
-// Get Single Product By ID
+// GET SINGLE PRODUCT
 // =======================
+
 const getSingleProduct = async (req, res) => {
   try {
-
-    const product = await Product.findById(req.params.id);
+    const product =
+      await Product.findById(req.params.id);
 
     if (!product) {
       return res.status(404).json({
@@ -52,12 +100,11 @@ const getSingleProduct = async (req, res) => {
     });
 
   } catch (error) {
+    console.log(
+      "❌ GET SINGLE PRODUCT ERROR:",
+      error
+    );
 
-    console.log("Get Single Product Error:", error);
-
-    // Malformed/invalid ObjectId strings throw a CastError here rather
-    // than simply returning null, so surface that as a 404 too instead
-    // of a 500.
     if (error.name === "CastError") {
       return res.status(404).json({
         success: false,
@@ -69,24 +116,25 @@ const getSingleProduct = async (req, res) => {
       success: false,
       message: error.message,
     });
-
   }
 };
 
-
-
-
 // =======================
-// Create Product With Images
+// CREATE PRODUCT
 // =======================
+
 const createProduct = async (req, res) => {
   try {
+    console.log(
+      "========== CREATE PRODUCT =========="
+    );
 
-    console.log("========== CREATE PRODUCT ==========");
     console.log("BODY:", req.body);
-    console.log("FILES:", req.files);
 
-
+    console.log(
+      "FILES:",
+      req.files?.length || 0
+    );
 
     const {
       name,
@@ -100,188 +148,202 @@ const createProduct = async (req, res) => {
       ingredients,
       isNew,
       isBestseller,
-
-      top,
-      heart,
-      base,
-
+      fragranceNotes,
     } = req.body;
 
+    // =======================
+    // VALIDATION
+    // =======================
 
-
-    // Validation
-
-    if (!name || !brand || !category || !price) {
-
+    if (
+      !name ||
+      !brand ||
+      !category ||
+      !price
+    ) {
       return res.status(400).json({
-
-        success:false,
-
+        success: false,
         message:
-        "Name, Brand, Category and Price are required."
-
+          "Name, Brand, Category and Price are required.",
       });
-
     }
 
+    // =======================
+    // FRAGRANCE NOTES
+    // =======================
 
+    let notes = {
+      top: [],
+      heart: [],
+      base: [],
+    };
 
+    if (fragranceNotes) {
+      try {
+        notes =
+          JSON.parse(fragranceNotes);
+      } catch (error) {
+        console.log(
+          "⚠️ Invalid fragranceNotes JSON"
+        );
+      }
+    }
 
-    // Save uploaded images paths
+    // =======================
+    // UPLOAD IMAGES TO R2
+    // =======================
 
-    const uploadedImages = req.files
-      ? req.files.map(
-          (file)=> `/uploads/products/${file.filename}`
-        )
-      : [];
+    const uploadedImages = [];
 
+    if (
+      req.files &&
+      req.files.length > 0
+    ) {
+      console.log(
+        "☁️ Uploading images to R2..."
+      );
 
+      for (const file of req.files) {
+        console.log(
+          "Uploading:",
+          file.originalname
+        );
 
+        const imageUrl =
+          await uploadToR2(file);
 
-    const product = await Product.create({
+        uploadedImages.push(
+          imageUrl
+        );
 
-      name,
+        console.log(
+          "✅ R2 uploaded:",
+          imageUrl
+        );
+      }
+    }
 
-      brand,
+    // =======================
+    // CREATE PRODUCT
+    // =======================
 
-      category,
+    const product =
+      await Product.create({
+        name,
 
-      collection,
+        brand,
 
+        category,
 
-      price:Number(price),
+        collection:
+          collection || "",
 
-      stock:Number(stock || 0),
+        price:
+          Number(price),
 
+        stock:
+          Number(stock || 0),
 
-      description,
+        description:
+          description || "",
 
-      story,
+        story:
+          story || "",
 
-      ingredients,
+        ingredients:
+          ingredients || "",
 
+        image:
+          uploadedImages.length > 0
+            ? uploadedImages[0]
+            : "",
 
+        images:
+          uploadedImages,
 
-      image:
-      uploadedImages.length > 0
-      ? uploadedImages[0]
-      : "",
+        fragranceNotes: {
+          top:
+            notes.top || [],
 
+          heart:
+            notes.heart || [],
 
+          base:
+            notes.base || [],
+        },
 
-      images: uploadedImages,
+        isNew:
+          isNew === "true",
 
-
-
-      fragranceNotes:{
-
-        top:
-        top
-        ? top.split(",")
-        : [],
-
-
-        heart:
-        heart
-        ? heart.split(",")
-        : [],
-
-
-        base:
-        base
-        ? base.split(",")
-        : []
-
-      },
-
-
-
-      isNew:
-      isNew === "true",
-
-
-
-      isBestseller:
-      isBestseller === "true"
-
-
-    });
-
-
-
-
-    res.status(201).json({
-
-      success:true,
-
-      message:"Product created successfully.",
-
-      product
-
-    });
-
-
-
-  } catch(error){
-
+        isBestseller:
+          isBestseller === "true",
+      });
 
     console.log(
-      "Create Product Error:",
+      "✅ PRODUCT CREATED:",
+      product._id
+    );
+
+    res.status(201).json({
+      success: true,
+      message:
+        "Product created successfully.",
+      product,
+    });
+
+  } catch (error) {
+    console.log(
+      "❌ CREATE PRODUCT ERROR:",
       error
     );
 
-
     res.status(500).json({
-
-      success:false,
-
-      message:error.message
-
+      success: false,
+      message: error.message,
     });
-
-
   }
 };
 
-
-
-
-
-
-
 // =======================
-// Update Product With Images
+// UPDATE PRODUCT
 // =======================
-const updateProduct = async (req,res)=>{
 
-  try{
+const updateProduct = async (
+  req,
+  res
+) => {
+  try {
+    console.log(
+      "========== UPDATE PRODUCT =========="
+    );
 
+    console.log(
+      "BODY:",
+      req.body
+    );
 
-    const {id}=req.params;
+    console.log(
+      "FILES:",
+      req.files?.length || 0
+    );
 
+    const { id } = req.params;
 
+    // =======================
+    // FIND PRODUCT
+    // =======================
 
     const product =
-    await Product.findById(id);
+      await Product.findById(id);
 
-
-
-    if(!product){
-
+    if (!product) {
       return res.status(404).json({
-
-        success:false,
-
-        message:"Product not found."
-
+        success: false,
+        message: "Product not found.",
       });
-
     }
 
-
-
     const {
-
       name,
       brand,
       category,
@@ -293,222 +355,265 @@ const updateProduct = async (req,res)=>{
       ingredients,
       isNew,
       isBestseller,
+      fragranceNotes,
+      existingImages,
+    } = req.body;
 
-    }=req.body;
+    // =======================
+    // EXISTING IMAGES
+    // =======================
 
+    let images = [];
 
+    if (existingImages) {
+      try {
+        images =
+          JSON.parse(existingImages);
+      } catch (error) {
+        console.log(
+          "⚠️ Invalid existingImages JSON"
+        );
 
-
-    let uploadedImages =
-    product.images || [];
-
-
-
-    if(req.files && req.files.length > 0){
-
-      uploadedImages =
-      req.files.map(
-
-        file =>
-        `/uploads/products/${file.filename}`
-
-      );
-
+        images =
+          product.images || [];
+      }
+    } else {
+      images =
+        product.images || [];
     }
 
+    // =======================
+    // UPLOAD NEW IMAGES
+    // =======================
 
+    if (
+      req.files &&
+      req.files.length > 0
+    ) {
+      console.log(
+        "☁️ Uploading new images to R2..."
+      );
 
+      for (const file of req.files) {
+        console.log(
+          "Uploading:",
+          file.originalname
+        );
+
+        const imageUrl =
+          await uploadToR2(file);
+
+        images.push(imageUrl);
+
+        console.log(
+          "✅ R2 uploaded:",
+          imageUrl
+        );
+      }
+    }
+
+    // Maximum 3 images
+
+    images =
+      images.slice(0, 3);
+
+    // =======================
+    // FRAGRANCE NOTES
+    // =======================
+
+    let notes =
+      product.fragranceNotes || {
+        top: [],
+        heart: [],
+        base: [],
+      };
+
+    if (fragranceNotes) {
+      try {
+        notes =
+          JSON.parse(
+            fragranceNotes
+          );
+      } catch (error) {
+        console.log(
+          "⚠️ Invalid fragranceNotes JSON"
+        );
+      }
+    }
+
+    // =======================
+    // UPDATE DATA
+    // =======================
 
     product.name =
-    name || product.name;
-
+      name !== undefined
+        ? name
+        : product.name;
 
     product.brand =
-    brand || product.brand;
-
+      brand !== undefined
+        ? brand
+        : product.brand;
 
     product.category =
-    category || product.category;
-
+      category !== undefined
+        ? category
+        : product.category;
 
     product.collection =
-    collection || product.collection;
-
+      collection !== undefined
+        ? collection
+        : product.collection;
 
     product.price =
-    price || product.price;
-
+      price !== undefined
+        ? Number(price)
+        : product.price;
 
     product.stock =
-    stock || product.stock;
-
+      stock !== undefined
+        ? Number(stock)
+        : product.stock;
 
     product.description =
-    description || product.description;
-
+      description !== undefined
+        ? description
+        : product.description;
 
     product.story =
-    story || product.story;
-
+      story !== undefined
+        ? story
+        : product.story;
 
     product.ingredients =
-    ingredients || product.ingredients;
+      ingredients !== undefined
+        ? ingredients
+        : product.ingredients;
 
-
-
-    product.image =
-    uploadedImages[0] || product.image;
-
-
+    // =======================
+    // UPDATE IMAGES
+    // =======================
 
     product.images =
-    uploadedImages;
+      images;
 
+    product.image =
+      images.length > 0
+        ? images[0]
+        : "";
 
+    // =======================
+    // FRAGRANCE NOTES
+    // =======================
+
+    product.fragranceNotes = {
+      top:
+        notes.top || [],
+
+      heart:
+        notes.heart || [],
+
+      base:
+        notes.base || [],
+    };
+
+    // =======================
+    // FLAGS
+    // =======================
 
     product.isNew =
-    isNew === "true"
-    ? true
-    : product.isNew;
-
-
+      isNew === "true";
 
     product.isBestseller =
-    isBestseller === "true"
-    ? true
-    : product.isBestseller;
+      isBestseller === "true";
 
-
-
+    // =======================
+    // SAVE
+    // =======================
 
     await product.save();
 
-
-
+    console.log(
+      "✅ PRODUCT UPDATED:",
+      product._id
+    );
 
     res.status(200).json({
-
-      success:true,
-
-      message:"Product updated successfully.",
-
-      product
-
+      success: true,
+      message:
+        "Product updated successfully.",
+      product,
     });
 
-
-
-  }
-  catch(error){
-
-
+  } catch (error) {
     console.log(
-      "Update Product Error:",
+      "❌ UPDATE PRODUCT ERROR:",
       error
     );
 
-
     res.status(500).json({
-
-      success:false,
-
-      message:error.message
-
+      success: false,
+      message: error.message,
     });
-
-
   }
-
 };
 
-
-
-
-
-
-
 // =======================
-// Delete Product
+// DELETE PRODUCT
 // =======================
-const deleteProduct = async(req,res)=>{
 
-  try{
-
-
-    const {id}=req.params;
-
+const deleteProduct = async (
+  req,
+  res
+) => {
+  try {
+    const { id } =
+      req.params;
 
     const product =
-    await Product.findById(id);
+      await Product.findById(id);
 
-
-
-    if(!product){
-
+    if (!product) {
       return res.status(404).json({
-
-        success:false,
-
-        message:"Product not found."
-
+        success: false,
+        message: "Product not found.",
       });
-
     }
-
-
 
     await product.deleteOne();
 
-
+    console.log(
+      "✅ PRODUCT DELETED:",
+      id
+    );
 
     res.status(200).json({
-
-      success:true,
-
-      message:"Product deleted successfully."
-
+      success: true,
+      message:
+        "Product deleted successfully.",
     });
 
-
-
-  }
-  catch(error){
-
-
+  } catch (error) {
     console.log(
-      "Delete Product Error:",
+      "❌ DELETE PRODUCT ERROR:",
       error
     );
 
-
     res.status(500).json({
-
-      success:false,
-
-      message:error.message
-
+      success: false,
+      message: error.message,
     });
-
-
   }
-
 };
 
-
-
-
-
+// =======================
+// EXPORT
+// =======================
 
 module.exports = {
-
   getAllProducts,
-
   getSingleProduct,
-
   createProduct,
-
   updateProduct,
-
   deleteProduct,
-
 };

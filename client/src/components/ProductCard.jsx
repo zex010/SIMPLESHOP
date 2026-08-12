@@ -2,7 +2,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { useShop } from "../context/ShopContext";
 
 function ProductCard({ product }) {
-
   const { addToCart } = useShop();
   const navigate = useNavigate();
 
@@ -11,14 +10,25 @@ function ProductCard({ product }) {
     navigate("/checkout");
   };
 
+  const resolveImage = (src) => {
+    if (!src) return "";
+
+    // R2 / any complete URL
+    if (src.startsWith("http://") || src.startsWith("https://")) {
+      return src;
+    }
+
+    // Old local/server images
+    return `https://avernus-api.onrender.com${src}`;
+  };
+
   return (
     <div className="bg-white cursor-pointer group">
-
       {/* Product Image */}
       <Link to={`/product/${product._id}`}>
         <div className="aspect-square w-full overflow-hidden bg-[#FAF9F6] flex items-center justify-center rounded-sm">
           <img
-            src={`https://avernus-api.onrender.com${product.image}`}
+            src={resolveImage(product.image)}
             alt={product.name}
             className="
               h-full
@@ -33,10 +43,8 @@ function ProductCard({ product }) {
         </div>
       </Link>
 
-
       {/* Product Details */}
       <div className="text-center mt-6">
-
         <p className="text-xs tracking-[4px] uppercase text-stone-400">
           {product.brand}
         </p>
@@ -48,7 +56,6 @@ function ProductCard({ product }) {
         <p className="mt-2 text-stone-700 font-medium">
           ${product.price}
         </p>
-
 
         {/* Add To Bag / Buy Now */}
         <div className="mt-5 flex items-center justify-center gap-3">
@@ -90,9 +97,7 @@ function ProductCard({ product }) {
             Buy Now
           </button>
         </div>
-
       </div>
-
     </div>
   );
 }

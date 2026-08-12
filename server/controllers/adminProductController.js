@@ -1,4 +1,32 @@
 const Product = require("../models/Product");
+const {
+  r2,
+  PutObjectCommand,
+  BUCKET_NAME,
+} = require("../config/r2");
+
+// =======================
+// R2 UPLOAD HELPER
+// =======================
+
+const uploadToR2 = async (file) => {
+  const safeName = file.originalname
+    .replace(/\s+/g, "-")
+    .replace(/[^a-zA-Z0-9._-]/g, "");
+
+  const key = `products/${Date.now()}-${safeName}`;
+
+  await r2.send(
+    new PutObjectCommand({
+      Bucket: BUCKET_NAME,
+      Key: key,
+      Body: file.buffer,
+      ContentType: file.mimetype,
+    })
+  );
+
+  return `${process.env.R2_PUBLIC_URL}/${key}`;
+};
 
 
 // =======================
@@ -116,11 +144,13 @@ const createProduct = async (req, res) => {
 
     if(req.files && req.files.length > 0){
 
-      uploadedImages = req.files.map(
+      for (const file of req.files) {
 
-        file => `/uploads/products/${file.filename}`
+        const imageUrl = await uploadToR2(file);
 
-      );
+        uploadedImages.push(imageUrl);
+
+      }
 
     }
 
@@ -320,17 +350,41 @@ const updateProduct = async (req,res)=>{
 
 
 
-    let images = product.images;
+    // Keep existing images the admin didn't remove
+
+    let images = [];
+
+    if (req.body.existingImages) {
+
+      try {
+
+        images = JSON.parse(req.body.existingImages);
+
+      } catch (error) {
+
+        console.log("Invalid existingImages JSON");
+
+        images = product.images || [];
+
+      }
+
+    } else {
+
+      images = product.images || [];
+
+    }
 
 
 
     if(req.files && req.files.length > 0){
 
-      images = req.files.map(
+      for (const file of req.files) {
 
-        file => `/uploads/products/${file.filename}`
+        const imageUrl = await uploadToR2(file);
 
-      );
+        images.push(imageUrl);
+
+      }
 
     }
 
