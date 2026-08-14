@@ -1,10 +1,18 @@
+
 import { Link, useNavigate } from "react-router-dom";
+import { Heart } from "lucide-react";
 import { useShop } from "../context/ShopContext";
 
 const API_HOST = "https://avernus-api.onrender.com";
 
 function ProductCard({ product }) {
-  const { addToCart } = useShop();
+  const {
+    addToCart,
+    wishlist,
+    addToWishlist,
+    removeFromWishlist,
+  } = useShop();
+
   const navigate = useNavigate();
 
   // ============================================================
@@ -60,6 +68,27 @@ function ProductCard({ product }) {
   };
 
   // ============================================================
+  // WISHLIST STATUS
+  // ============================================================
+  const isWishlisted = wishlist?.some(
+    (item) => item._id === product?._id
+  );
+
+  // ============================================================
+  // TOGGLE WISHLIST
+  // ============================================================
+  const handleWishlist = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (isWishlisted) {
+      removeFromWishlist(product._id);
+    } else {
+      addToWishlist(product);
+    }
+  };
+
+  // ============================================================
   // ADD TO BAG
   // ============================================================
   const handleAddToCart = (event) => {
@@ -104,6 +133,43 @@ function ProductCard({ product }) {
         className="block shrink-0"
       >
         <div className="relative aspect-square w-full overflow-hidden bg-[#F8F7F4]">
+
+          {/* ====================================================
+              WISHLIST HEART
+              Small + minimal so it does not change the layout.
+          ==================================================== */}
+          <button
+  type="button"
+  onClick={handleWishlist}
+  aria-label={
+    isWishlisted
+      ? "Remove from wishlist"
+      : "Add to wishlist"
+  }
+  className="
+    absolute
+    right-4
+    top-4
+    z-20
+    flex
+    h-10
+    w-10
+    items-center
+    justify-center
+    bg-transparent
+    text-black
+    transition-all
+    duration-300
+    hover:scale-110
+  "
+>
+  <Heart
+    size={20}
+    strokeWidth={1.5}
+    fill={isWishlisted ? "currentColor" : "none"}
+  />
+</button>
+
           <img
             src={imageUrl}
             alt={product?.name || "Avernus fragrance"}
@@ -118,8 +184,13 @@ function ProductCard({ product }) {
               group-hover:scale-[1.035]
             "
             onError={(event) => {
-              if (!event.currentTarget.src.includes("placeholder.png")) {
-                event.currentTarget.src = "/placeholder.png";
+              if (
+                !event.currentTarget.src.includes(
+                  "placeholder.png"
+                )
+              ) {
+                event.currentTarget.src =
+                  "/placeholder.png";
               }
             }}
           />
@@ -139,8 +210,6 @@ function ProductCard({ product }) {
       >
         {/* ======================================================
             NEW ARRIVAL
-            Fixed space so cards stay aligned.
-            Text only — no background.
         ====================================================== */}
         <div
           className="
@@ -212,7 +281,6 @@ function ProductCard({ product }) {
 
         {/* ======================================================
             PRODUCT NAME
-            Fixed height keeps names aligned.
         ====================================================== */}
         <div
           className="
@@ -247,13 +315,11 @@ function ProductCard({ product }) {
 
         {/* ======================================================
             FLEXIBLE SPACE
-            Keeps prices/buttons aligned across cards.
         ====================================================== */}
         <div className="flex-1 min-h-0" />
 
         {/* ======================================================
             PRICE
-            Positioned slightly higher.
         ====================================================== */}
         <div
           className="
@@ -280,7 +346,6 @@ function ProductCard({ product }) {
 
         {/* ======================================================
             ACTION BUTTONS
-            Fixed height and slightly higher position.
         ====================================================== */}
         <div
           className="
@@ -353,3 +418,4 @@ function ProductCard({ product }) {
 }
 
 export default ProductCard;
+

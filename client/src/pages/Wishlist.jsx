@@ -1,136 +1,521 @@
+
 import { useNavigate } from "react-router-dom";
-import { Heart, X, ShoppingBag } from "lucide-react";
+import { Heart, Trash2, ShoppingBag } from "lucide-react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { useShop } from "../context/ShopContext";
 
-const FALLBACK_IMAGE = "https://placehold.co/400x400/f5f5f4/78716c?text=No+Image";
-
-// Wishlist items may carry a single `image` string (raw catalogue products)
-// or an `images` array (products normalized on the ProductDetails page) —
-// handle both, same pattern used in Checkout/MyOrders.
-function resolveImageSrc(product) {
-  const src = product?.image || product?.images?.[0];
-  if (!src) return FALLBACK_IMAGE;
-  return src.startsWith("http") ? src : `https://avernus-api.onrender.com/${src.replace(/^\/+/, "")}`;
-}
+const API_HOST = "https://avernus-api.onrender.com";
 
 function Wishlist() {
   const navigate = useNavigate();
-  const { wishlist, removeFromWishlist, addToCart } = useShop();
 
-  const handleAddToCart = (e, product) => {
-    e.stopPropagation();
-    if (!addToCart) return;
+  const {
+    wishlist,
+    removeFromWishlist,
+    addToCart,
+  } = useShop();
 
-    // Wishlist items can come straight from the catalogue with no size
-    // chosen yet — the Order model requires one, so default to the
-    // standard 100ML bottle (the app's base/unmultiplied price) rather
-    // than sending a sizeless item that will fail order validation.
-    const cartProduct = {
-      ...product,
-      _id: product._id,
-      name: product.name,
-      brand: product.brand,
-      price: product.price,
-      image: product.image || product.images?.[0],
-      selectedSize: product.selectedSize || "100ML",
-      qty: 1,
-    };
+  // ============================================================
+  // IMAGE RESOLVER
+  // Same logic as ProductCard
+  // ============================================================
 
-    addToCart(cartProduct);
+  const resolveImage = (src) => {
+    if (!src || typeof src !== "string") {
+      return "/placeholder.png";
+    }
+
+    const cleanSrc = src.trim();
+
+    if (!cleanSrc) {
+      return "/placeholder.png";
+    }
+
+    // Cloudflare R2 / complete URL
+    if (/^https?:\/\//i.test(cleanSrc)) {
+      return cleanSrc;
+    }
+
+    // Old Render/backend image path
+    return `${API_HOST}${cleanSrc.startsWith("/") ? "" : "/"}${cleanSrc}`;
   };
 
-  const handleRemove = (e, id) => {
-    e.stopPropagation();
-    if (removeFromWishlist) removeFromWishlist(id);
+  // ============================================================
+  // CATEGORY LABEL
+  // Same as ProductCard
+  // ============================================================
+
+  const getCategoryLabel = (category) => {
+    const normalized = (category || "").trim().toLowerCase();
+
+    if (normalized === "men") return "MASCULINE";
+    if (normalized === "women") return "FEMININE";
+
+    return "UNISEX";
+  };
+
+  // ============================================================
+  // DISPLAY NAME
+  // Same as ProductCard
+  // ============================================================
+
+  const getDisplayName = (name) => {
+    if (!name || typeof name !== "string") {
+      return "Avernus Fragrance";
+    }
+
+    return name
+      .replace(/\s*pour\s+femme\s*/gi, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+  };
+
+  // ============================================================
+  // REMOVE FROM WISHLIST
+  // ============================================================
+
+  const handleRemove = (event, productId) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (removeFromWishlist) {
+      removeFromWishlist(productId);
+    }
+  };
+
+  // ============================================================
+  // ADD TO BAG
+  // Same behavior as ProductCard
+  // ============================================================
+
+  const handleAddToCart = (event, product) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (!addToCart) return;
+
+    addToCart(product);
+  };
+
+  // ============================================================
+  // BUY NOW
+  // Same behavior as ProductCard
+  // ============================================================
+
+  const handleBuyNow = (event, product) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (!addToCart) return;
+
+    addToCart(product);
+    navigate("/checkout");
   };
 
   return (
     <div className="min-h-screen bg-white text-black">
       <Navbar />
 
-      {/* HERO */}
-      <section className="relative h-[50vh] flex items-center justify-center border-b border-stone-100">
-        <div className="text-center">
-          <p className="text-xs uppercase tracking-[0.5em] text-stone-500 mb-8">
-            AVERNUS
-          </p>
-          <h1 className="font-serif text-6xl md:text-8xl tracking-[0.15em]">
-            WISHLIST
-          </h1>
-          <p className="mt-8 text-stone-500 tracking-[0.3em] uppercase text-sm">
-            Fragrances You're Considering
-          </p>
-        </div>
-      </section>
+      {/* ========================================================
+          HERO
+      ======================================================== */}
+<section className="relative h-[70vh] flex items-center justify-center overflow-hidden">
 
-      {/* CONTENT */}
+  {/* WISHLIST HERO IMAGE */}
+  <img
+    src="/wishlist.jpg"
+    alt="Wishlist"
+    className="absolute inset-0 w-full h-full object-cover"
+  />
+
+  {/* DARK OVERLAY */}
+  <div className="absolute inset-0 bg-black/40"></div>
+
+  {/* HERO CONTENT */}
+  <div className="relative z-10 text-center text-white px-6">
+
+    <p className="text-xs uppercase tracking-[0.5em] text-white/80 mb-8">
+      AVERNUS
+    </p>
+
+    <h1 className="font-serif text-6xl md:text-8xl tracking-[0.15em]">
+      WISHLIST
+    </h1>
+
+    <p className="mt-8 text-white/90 tracking-[0.3em] uppercase text-sm">
+      Fragrances You're Considering
+    </p>
+
+  </div>
+</section>
+      
+
+      {/* ========================================================
+          PRODUCTS
+      ======================================================== */}
+
       <section className="px-6 md:px-16 py-20">
         {!wishlist || wishlist.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-center">
-            <Heart size={40} strokeWidth={1} className="text-stone-300 mb-6" />
-            <h2 className="font-serif text-3xl md:text-4xl">
+            <Heart
+              size={40}
+              strokeWidth={1}
+              className="text-stone-300 mb-6"
+            />
+
+            <h2 className="font-serif text-4xl">
               Your Wishlist Is Empty
             </h2>
+
             <p className="mt-4 text-stone-500 max-w-md">
               Save the fragrances you love and come back to them whenever
               you're ready.
             </p>
+
             <button
+              type="button"
               onClick={() => navigate("/collection")}
-              className="mt-10 bg-black text-white px-10 py-4 uppercase tracking-[0.35em] text-xs hover:bg-stone-800 transition"
+              className="
+                mt-10
+                bg-black
+                text-white
+                px-10
+                py-4
+                uppercase
+                tracking-[0.35em]
+                text-xs
+                hover:bg-stone-800
+                transition
+              "
             >
               Explore The Collection
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-10 gap-y-20">
-            {wishlist.map((product) => (
-              <div
-                key={product._id}
-                onClick={() => navigate(`/product/${product._id}`)}
-                className="group cursor-pointer"
-              >
-                <div className="relative w-full h-[420px] overflow-hidden bg-[#f8f8f8]">
-                  <button
-                    onClick={(e) => handleRemove(e, product._id)}
-                    aria-label="Remove from wishlist"
-                    className="absolute top-5 right-5 z-20 h-9 w-9 rounded-full bg-white/90 flex items-center justify-center hover:bg-black hover:text-white transition"
-                  >
-                    <X size={16} />
-                  </button>
-                  <img
-                    src={resolveImageSrc(product)}
-                    alt={product.name}
-                    className="w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
-                    onError={(e) => {
-                      e.target.onerror = null;
-                      e.target.src = FALLBACK_IMAGE;
-                    }}
-                  />
-                </div>
+          <div
+            className="
+              grid
+              grid-cols-1
+              sm:grid-cols-2
+              lg:grid-cols-4
+              gap-x-10
+              gap-y-20
+              items-stretch
+            "
+          >
+            {wishlist.map((product) => {
+              const imageUrl = resolveImage(product?.image);
+              const category = getCategoryLabel(product?.category);
+              const displayName = getDisplayName(product?.name);
 
-                <div className="text-center mt-8">
-                  <p className="uppercase tracking-[0.45em] text-[11px] text-stone-500">
-                    {product.brand}
-                  </p>
-                  <h2 className="font-serif text-[30px] mt-3 leading-tight transition-colors duration-300 group-hover:text-stone-600">
-                    {product.name}
-                  </h2>
-                  <p className="mt-4 tracking-[0.3em] text-sm text-stone-700">
-                    ${product.price}
-                  </p>
-                  <button
-                    onClick={(e) => handleAddToCart(e, product)}
-                    className="w-full mt-8 flex items-center justify-center gap-3 bg-black text-white py-4 uppercase tracking-[0.35em] text-xs transition-all duration-300 hover:bg-stone-800"
+              return (
+                <article
+                  key={product._id}
+                  className="
+                    group
+                    flex
+                    h-full
+                    min-h-full
+                    flex-col
+                    bg-white
+                    text-black
+                    cursor-pointer
+                  "
+                  onClick={() =>
+                    navigate(`/product/${product._id}`)
+                  }
+                >
+                  {/* ==================================================
+                      PRODUCT IMAGE
+                  ================================================== */}
+
+                  <div className="relative aspect-square w-full overflow-hidden bg-[#F8F7F4]">
+                    {/* REMOVE FROM WISHLIST */}
+
+                    <button
+                      onClick={(e) => handleRemove(e, product._id)}
+                      aria-label="Remove from wishlist"
+                      className="
+    absolute
+    top-4
+    right-4
+    z-20
+    flex
+    items-center
+    justify-center
+    bg-transparent
+    text-black
+    transition-all
+    duration-300
+    hover:scale-110
+    hover:text-red-600
+  "
+                    >
+                      <Trash2
+                        size={19}
+                        strokeWidth={1.4}
+                      />
+                    </button>
+
+                    <img
+                      src={imageUrl}
+                      alt={
+                        product?.name ||
+                        "Avernus fragrance"
+                      }
+                      className="
+                        h-full
+                        w-full
+                        object-cover
+                        object-center
+                        transition-transform
+                        duration-700
+                        ease-out
+                        group-hover:scale-[1.035]
+                      "
+                      onError={(event) => {
+                        if (
+                          !event.currentTarget.src.includes(
+                            "placeholder.png"
+                          )
+                        ) {
+                          event.currentTarget.src =
+                            "/placeholder.png";
+                        }
+                      }}
+                    />
+                  </div>
+
+                  {/* ==================================================
+                      PRODUCT INFORMATION
+                  ================================================== */}
+
+                  <div
+                    className="
+                      flex
+                      flex-1
+                      flex-col
+                      pt-6
+                    "
                   >
-                    <ShoppingBag size={14} />
-                    ADD TO CART
-                  </button>
-                </div>
-              </div>
-            ))}
+                    {/* NEW ARRIVAL */}
+
+                    <div
+                      className="
+                        flex
+                        h-[20px]
+                        shrink-0
+                        items-start
+                        justify-center
+                      "
+                    >
+                      {product?.isNew && (
+                        <span
+                          className="
+                            text-[9px]
+                            font-medium
+                            uppercase
+                            tracking-[0.3em]
+                            text-stone-400
+                          "
+                        >
+                          NEW ARRIVAL
+                        </span>
+                      )}
+                    </div>
+
+                    {/* BRAND + CATEGORY */}
+
+                    <div
+                      className="
+                        mt-3
+                        flex
+                        h-[18px]
+                        shrink-0
+                        items-center
+                        justify-center
+                        gap-2
+                        text-center
+                      "
+                    >
+                      <span
+                        className="
+                          text-[10px]
+                          font-medium
+                          uppercase
+                          tracking-[0.25em]
+                          text-stone-500
+                        "
+                      >
+                        {product?.brand || "AVERNUS"}
+                      </span>
+
+                      <span className="text-[10px] text-stone-300">
+                        |
+                      </span>
+
+                      <span
+                        className="
+                          text-[10px]
+                          font-medium
+                          uppercase
+                          tracking-[0.25em]
+                          text-stone-400
+                        "
+                      >
+                        {category}
+                      </span>
+                    </div>
+
+                    {/* PRODUCT NAME */}
+
+                    <div
+                      className="
+                        mt-3
+                        flex
+                        h-[68px]
+                        shrink-0
+                        items-start
+                        justify-center
+                        px-3
+                      "
+                    >
+                      <h2
+                        className="
+                          line-clamp-2
+                          max-w-full
+                          text-center
+                          font-serif
+                          text-[28px]
+                          font-normal
+                          leading-[1.1]
+                          tracking-[-0.01em]
+                          text-stone-900
+                          transition-colors
+                          duration-300
+                          group-hover:text-stone-600
+                        "
+                      >
+                        {displayName}
+                      </h2>
+                    </div>
+
+                    {/* FLEXIBLE SPACE */}
+
+                    <div className="flex-1 min-h-0" />
+
+                    {/* PRICE */}
+
+                    <div
+                      className="
+                        mt-auto
+                        -translate-y-2
+                        flex
+                        h-[28px]
+                        shrink-0
+                        items-center
+                        justify-center
+                      "
+                    >
+                      <span
+                        className="
+                          text-[13px]
+                          font-normal
+                          tracking-[0.18em]
+                          text-stone-600
+                        "
+                      >
+                        ${product?.price ?? "0"}
+                      </span>
+                    </div>
+
+                    {/* ==================================================
+                        ACTION BUTTONS
+                        EXACT SAME STRUCTURE AS ProductCard
+                    ================================================== */}
+
+                    <div
+                      className="
+                        mt-3
+                        flex
+                        h-[48px]
+                        w-full
+                        shrink-0
+                        gap-2
+                      "
+                    >
+                      {/* ADD TO BAG */}
+
+                      <button
+                        type="button"
+                        onClick={(event) =>
+                          handleAddToCart(
+                            event,
+                            product
+                          )
+                        }
+                        className="
+                          flex
+                          h-full
+                          flex-1
+                          items-center
+                          justify-center
+                          border
+                          border-black
+                          bg-black
+                          px-3
+                          text-[10px]
+                          font-medium
+                          uppercase
+                          tracking-[0.2em]
+                          text-white
+                          transition-all
+                          duration-300
+                          hover:bg-stone-800
+                        "
+                      >
+                        ADD TO BAG
+                      </button>
+
+                      {/* BUY NOW */}
+
+                      <button
+                        type="button"
+                        onClick={(event) =>
+                          handleBuyNow(
+                            event,
+                            product
+                          )
+                        }
+                        className="
+                          flex
+                          h-full
+                          flex-1
+                          items-center
+                          justify-center
+                          border
+                          border-stone-300
+                          bg-white
+                          px-3
+                          text-[10px]
+                          font-medium
+                          uppercase
+                          tracking-[0.2em]
+                          text-stone-800
+                          transition-all
+                          duration-300
+                          hover:border-black
+                          hover:bg-stone-50
+                        "
+                      >
+                        BUY NOW
+                      </button>
+                    </div>
+                  </div>
+                </article>
+              );
+            })}
           </div>
         )}
       </section>
@@ -141,3 +526,4 @@ function Wishlist() {
 }
 
 export default Wishlist;
+
