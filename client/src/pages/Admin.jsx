@@ -16,921 +16,548 @@ import CustomersTable from "../components/admin/CustomersTable";
 
 import AnalyticsSection from "../components/admin/Analytics";
 import SettingsSection from "../components/admin/Settings";
+import HeroSections from "../components/admin/HeroSections";
 
 import ProductFormModal from "../components/admin/ProductFormModal";
 
 import adminApi from "../utils/adminApi";
 
-
-
 export default function Admin() {
-
-
   const navigate = useNavigate();
-
-
 
   // ==========================
   // STATES
   // ==========================
 
+  const [activeTab, setActiveTab] = useState("dashboard");
 
-  const [activeTab,setActiveTab] = useState("dashboard");
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  const [sidebarOpen,setSidebarOpen] = useState(false);
+  const [adminInfo, setAdminInfo] = useState(null);
 
+  const [stats, setStats] = useState(null);
 
-  const [adminInfo,setAdminInfo] = useState(null);
+  const [orders, setOrders] = useState([]);
 
+  const [products, setProducts] = useState([]);
 
-  const [stats,setStats] = useState(null);
+  const [customers, setCustomers] = useState([]);
 
-  const [orders,setOrders] = useState([]);
+  const [analytics, setAnalytics] = useState(null);
 
-  const [products,setProducts] = useState([]);
+  const [settings, setSettings] = useState(null);
 
-  const [customers,setCustomers] = useState([]);
+  const [loading, setLoading] = useState(true);
 
+  const [error, setError] = useState("");
 
-  const [analytics,setAnalytics] = useState(null);
+  // ==========================
+  // PRODUCT MODAL
+  // ==========================
 
-  const [settings,setSettings] = useState(null);
+  const [showProductModal, setShowProductModal] =
+    useState(false);
 
-
-
-  const [loading,setLoading] = useState(true);
-
-  const [error,setError] = useState("");
-
-
-
-  // Product Modal
-
-  const [showProductModal,setShowProductModal] = useState(false);
-
-  const [editingProduct,setEditingProduct] = useState(null);
-
-
-
-
+  const [editingProduct, setEditingProduct] =
+    useState(null);
 
   // ==========================
   // LOAD ADMIN INFO
   // ==========================
 
+  useEffect(() => {
+    const info = localStorage.getItem("adminInfo");
 
-  useEffect(()=>{
-
-
-    const info =
-      localStorage.getItem("adminInfo");
-
-
-    if(info){
-
-      setAdminInfo(
-        JSON.parse(info)
-      );
-
+    if (info) {
+      try {
+        setAdminInfo(JSON.parse(info));
+      } catch (err) {
+        console.error(
+          "Failed to parse adminInfo:",
+          err
+        );
+      }
     }
-
-
-  },[]);
-
-
-
-
-
-
+  }, []);
 
   // ==========================
   // LOAD DASHBOARD
   // ==========================
 
-
-  const loadDashboard = useCallback(async()=>{
-
-
-    try{
-
-
+  const loadDashboard = useCallback(async () => {
+    try {
       setLoading(true);
-
       setError("");
 
+      const [statsRes, ordersRes] =
+        await Promise.all([
+          adminApi.get("/dashboard-stats"),
+          adminApi.get("/orders"),
+        ]);
 
-
-      const [
-        statsRes,
-        ordersRes
-      ] = await Promise.all([
-
-
-        adminApi.get(
-          "/dashboard-stats"
-        ),
-
-
-        adminApi.get(
-          "/orders"
-        )
-
-
-      ]);
-
-
-
-      setStats(
-        statsRes.data.stats
-      );
-
+      setStats(statsRes.data.stats);
 
       setOrders(
-        ordersRes.data.orders
+        ordersRes.data.orders || []
       );
-
-
-
-    }
-    catch(err){
-
+    } catch (err) {
+      console.error(
+        "Dashboard loading error:",
+        err
+      );
 
       setError(
         err.response?.data?.message ||
-        "Failed loading dashboard"
+          "Failed loading dashboard"
       );
-
-
-    }
-    finally{
-
+    } finally {
       setLoading(false);
-
     }
-
-
-  },[]);
-
-
-
-
-
-
+  }, []);
 
   // ==========================
   // LOAD PRODUCTS
   // ==========================
 
-
-  const loadProducts = useCallback(async()=>{
-
-
-    try{
-
-
+  const loadProducts = useCallback(async () => {
+    try {
       setLoading(true);
-
       setError("");
 
-
-
-      const {data}=await adminApi.get(
-        "/products"
-      );
-
+      const { data } =
+        await adminApi.get("/products");
 
       setProducts(
-        data.products
+        data.products || []
       );
-
-
-    }
-    catch(err){
-
+    } catch (err) {
+      console.error(
+        "Products loading error:",
+        err
+      );
 
       setError(
         err.response?.data?.message ||
-        "Failed loading products"
+          "Failed loading products"
       );
-
-
-    }
-    finally{
-
+    } finally {
       setLoading(false);
-
     }
-
-
-  },[]);
-
-
-
-
-
-
+  }, []);
 
   // ==========================
   // LOAD CUSTOMERS
   // ==========================
 
-
-  const loadCustomers = useCallback(async()=>{
-
-
-    try{
-
-
+  const loadCustomers = useCallback(async () => {
+    try {
       setLoading(true);
+      setError("");
 
-
-      const {data}=await adminApi.get(
-        "/customers"
-      );
-
+      const { data } =
+        await adminApi.get("/customers");
 
       setCustomers(
-        data.customers
+        data.customers || []
       );
-
-
-    }
-    catch(err){
-
+    } catch (err) {
+      console.error(
+        "Customers loading error:",
+        err
+      );
 
       setError(
         err.response?.data?.message ||
-        "Failed loading customers"
+          "Failed loading customers"
       );
-
-
-    }
-    finally{
-
+    } finally {
       setLoading(false);
-
     }
+  }, []);
 
-
-  },[]);
-
-
-
-
-// ==========================
-// PART 2 CONTINUES BELOW
-// ==========================
   // ==========================
   // LOAD ANALYTICS
   // ==========================
 
-
-  const loadAnalytics = useCallback(async()=>{
-
-
-    try{
-
-
+  const loadAnalytics = useCallback(async () => {
+    try {
       setLoading(true);
+      setError("");
 
-
-      const {data}=await adminApi.get(
-        "/analytics"
-      );
-
+      const { data } =
+        await adminApi.get("/analytics");
 
       setAnalytics(
         data.analytics
       );
-
-
-    }
-    catch(err){
-
+    } catch (err) {
+      console.error(
+        "Analytics loading error:",
+        err
+      );
 
       setError(
         err.response?.data?.message ||
-        "Failed loading analytics"
+          "Failed loading analytics"
       );
-
-
-    }
-    finally{
-
+    } finally {
       setLoading(false);
-
     }
-
-
-  },[]);
-
-
-
-
-
+  }, []);
 
   // ==========================
   // LOAD SETTINGS
   // ==========================
 
-
-  const loadSettings = useCallback(async()=>{
-
-
-    try{
-
-
+  const loadSettings = useCallback(async () => {
+    try {
       setLoading(true);
+      setError("");
 
-
-      const {data}=await adminApi.get(
-        "/settings"
-      );
-
+      const { data } =
+        await adminApi.get("/settings");
 
       setSettings(
         data.settings
       );
-
-
-    }
-    catch(err){
-
+    } catch (err) {
+      console.error(
+        "Settings loading error:",
+        err
+      );
 
       setError(
         err.response?.data?.message ||
-        "Failed loading settings"
+          "Failed loading settings"
       );
-
-
-    }
-    finally{
-
+    } finally {
       setLoading(false);
+    }
+  }, []);
 
+  // ==========================
+  // TAB CHANGE
+  // ==========================
+
+  useEffect(() => {
+    if (
+      activeTab === "dashboard" ||
+      activeTab === "orders" ||
+      activeTab === "cancelled"
+    ) {
+      loadDashboard();
     }
 
-
-  },[]);
-
-
-
-
-
-
-
-  // ==========================
-  // TAB CHANGE LISTENER
-  // ==========================
-
-
-  useEffect(()=>{
-
-
-    if(activeTab==="dashboard")
-      loadDashboard();
-
-
-    if(activeTab==="orders")
-      loadDashboard();
-
-
-    if(activeTab==="cancelled")
-      loadDashboard();
-
-
-    if(activeTab==="products")
+    if (activeTab === "products") {
       loadProducts();
+    }
 
-
-    if(activeTab==="customers")
+    if (activeTab === "customers") {
       loadCustomers();
+    }
 
-
-    if(activeTab==="analytics")
+    if (activeTab === "analytics") {
       loadAnalytics();
+    }
 
-
-    if(activeTab==="settings")
+    if (activeTab === "settings") {
       loadSettings();
+    }
 
+    /*
+      IMPORTANT:
 
+      hero-sections is intentionally NOT loaded here.
 
-  },[
+      HeroSections.jsx manages its own API requests.
+    */
+  }, [
     activeTab,
     loadDashboard,
     loadProducts,
     loadCustomers,
     loadAnalytics,
-    loadSettings
+    loadSettings,
   ]);
-
-
-
-
-
-
-
 
   // ==========================
   // LOGOUT
   // ==========================
 
-
-  const handleLogout=()=>{
-
-
+  const handleLogout = () => {
     localStorage.removeItem(
       "adminToken"
     );
-
 
     localStorage.removeItem(
       "adminInfo"
     );
 
-
-    navigate(
-      "/admin-login",
-      {
-        replace:true
-      }
-    );
-
-
+    navigate("/admin-login", {
+      replace: true,
+    });
   };
 
-
-
-
-
-
-
   // ==========================
-  // ORDER ACTIONS
+  // APPROVE ORDER
   // ==========================
 
-
-  const handleApproveOrder=async(orderId)=>{
-
-
-    try{
-
-
+  const handleApproveOrder = async (
+    orderId
+  ) => {
+    try {
       await adminApi.patch(
         `/orders/${orderId}/approve`
       );
 
-
-
-      setOrders(prev=>
-
-        prev.map(order=>
-
-          order._id===orderId
-
-          ?
-
-          {
-            ...order,
-            status:"Approved"
-          }
-
-          :
-
-          order
-
+      setOrders((prev) =>
+        prev.map((order) =>
+          order._id === orderId
+            ? {
+                ...order,
+                status: "Approved",
+              }
+            : order
         )
-
       );
-
-
-    }
-    catch(err){
-
-
+    } catch (err) {
       setError(
         err.response?.data?.message ||
-        "Approve failed"
+          "Approve failed"
       );
-
-
     }
-
-
   };
 
+  // ==========================
+  // REJECT ORDER
+  // ==========================
 
-
-
-
-
-  const handleRejectOrder=async(orderId)=>{
-
-
-    try{
-
-
+  const handleRejectOrder = async (
+    orderId
+  ) => {
+    try {
       await adminApi.patch(
         `/orders/${orderId}/reject`
       );
 
-
-
-      setOrders(prev=>
-
-        prev.map(order=>
-
-          order._id===orderId
-
-          ?
-
-          {
-            ...order,
-            status:"Rejected"
-          }
-
-          :
-
-          order
-
+      setOrders((prev) =>
+        prev.map((order) =>
+          order._id === orderId
+            ? {
+                ...order,
+                status: "Rejected",
+              }
+            : order
         )
-
       );
-
-
-    }
-    catch(err){
-
-
+    } catch (err) {
       setError(
         err.response?.data?.message ||
-        "Reject failed"
+          "Reject failed"
       );
-
-
     }
-
-
   };
 
-
-
-
-
-
-
-
-
   // ==========================
-  // PRODUCT MODAL OPEN
+  // ADD PRODUCT
   // ==========================
 
-
-  const handleAddProduct=()=>{
-
-
+  const handleAddProduct = () => {
     setEditingProduct(null);
-
-
     setShowProductModal(true);
-
-
   };
 
+  // ==========================
+  // EDIT PRODUCT
+  // ==========================
 
-
-
-
-
-  const handleEditProduct=(product)=>{
-
-
+  const handleEditProduct = (
+    product
+  ) => {
     setEditingProduct(product);
-
-
     setShowProductModal(true);
-
-
   };
 
-
-
-
-
-
-
-
   // ==========================
-  // SAVE PRODUCT WITH IMAGES
+  // SAVE PRODUCT
   // ==========================
 
-
-  const handleSaveProduct=async(formData)=>{
-
-
-    try{
-
-
+  const handleSaveProduct = async (
+    formData
+  ) => {
+    try {
       setLoading(true);
-
-
 
       let response;
 
-
-
-      if(editingProduct){
-
-
+      if (editingProduct) {
         response = await adminApi.put(
-
           `/products/${editingProduct._id}`,
-
           formData,
-
           {
-
-            headers:{
-
+            headers: {
               "Content-Type":
-              "multipart/form-data"
-
-            }
-
+                "multipart/form-data",
+            },
           }
-
         );
 
-
-        setProducts(prev=>
-
-          prev.map(product=>
-
-            product._id===editingProduct._id
-
-            ?
-
-            response.data.product
-
-            :
-
-            product
-
+        setProducts((prev) =>
+          prev.map((product) =>
+            product._id ===
+            editingProduct._id
+              ? response.data.product
+              : product
           )
-
         );
-
-
-      }
-
-      else{
-
-
+      } else {
         response = await adminApi.post(
-
           "/products",
-
           formData,
-
           {
-
-            headers:{
-
+            headers: {
               "Content-Type":
-              "multipart/form-data"
-
-            }
-
+                "multipart/form-data",
+            },
           }
-
         );
 
-
-
-        setProducts(prev=>[
-
+        setProducts((prev) => [
           response.data.product,
-
-          ...prev
-
+          ...prev,
         ]);
-
       }
-
-
 
       setShowProductModal(false);
 
       setEditingProduct(null);
-
-
-
-    }
-    catch(err){
-
-
+    } catch (err) {
       setError(
         err.response?.data?.message ||
-        "Product save failed"
+          "Product save failed"
       );
-
-
-    }
-    finally{
-
+    } finally {
       setLoading(false);
-
     }
-
-
   };
-
-
-
-
-
 
   // ==========================
   // DELETE PRODUCT
   // ==========================
 
-
-  const handleDeleteProduct=async(id)=>{
-
-
-    if(
+  const handleDeleteProduct = async (
+    id
+  ) => {
+    if (
       !window.confirm(
         "Delete this product?"
       )
-    )
-    return;
+    ) {
+      return;
+    }
 
-
-
-    try{
-
-
+    try {
       await adminApi.delete(
         `/products/${id}`
       );
 
-
-      setProducts(prev=>
-
+      setProducts((prev) =>
         prev.filter(
-          product=>
-          product._id!==id
+          (product) =>
+            product._id !== id
         )
-
       );
-
-
-    }
-    catch(err){
-
-
+    } catch (err) {
       setError(
         err.response?.data?.message ||
-        "Delete failed"
+          "Delete failed"
       );
-
-
     }
-
-
   };
 
-
-
-
-// ==========================
-// PART 3 CONTINUES BELOW
-// ==========================
   // ==========================
   // SAVE SETTINGS
   // ==========================
 
-
-  const handleSaveSettings = async(form)=>{
-
-
-    try{
-
-
-      const {data}=await adminApi.put(
-        "/settings",
-        form
-      );
-
+  const handleSaveSettings = async (
+    form
+  ) => {
+    try {
+      const { data } =
+        await adminApi.put(
+          "/settings",
+          form
+        );
 
       setSettings(
         data.settings
       );
-
-
-    }
-    catch(err){
-
-
+    } catch (err) {
       setError(
         err.response?.data?.message ||
-        "Settings save failed"
+          "Settings save failed"
       );
-
-
     }
-
-
   };
 
-
-
-
-
-
   // ==========================
-  // ORDER LISTS SPLIT BY STATUS
-  // Cancelled orders are kept out of the main Dashboard/Orders views and
-  // shown in their own "Cancelled Orders" tab instead of being deleted
-  // from the database.
+  // ORDER FILTERS
   // ==========================
 
-  const activeOrders = orders.filter(
-    (order) => order.status !== "Cancelled"
-  );
+  const activeOrders =
+    orders.filter(
+      (order) =>
+        order.status !== "Cancelled"
+    );
 
-  const cancelledOrders = orders.filter(
-    (order) => order.status === "Cancelled"
-  );
-
+  const cancelledOrders =
+    orders.filter(
+      (order) =>
+        order.status === "Cancelled"
+    );
 
   // ==========================
-  // RETURN UI
+  // RETURN
   // ==========================
-
 
   return (
-
     <div className="min-h-screen bg-stone-50 flex">
-
 
       {/* SIDEBAR */}
 
       <Sidebar
-
         activeTab={activeTab}
-
         setActiveTab={setActiveTab}
-
         isOpen={sidebarOpen}
-
-        onClose={()=>
+        onClose={() =>
           setSidebarOpen(false)
         }
-
         onLogout={handleLogout}
-
       />
 
-
-
-
+      {/* MAIN */}
 
       <div className="flex-1 min-w-0 flex flex-col">
-
-
 
         {/* HEADER */}
 
         <Header
-
           activeTab={activeTab}
-
-          onMenuClick={()=>
+          onMenuClick={() =>
             setSidebarOpen(true)
           }
-
           adminName={
             adminInfo?.name
           }
-
         />
-
-
-
-
 
         <main className="flex-1 px-6 lg:px-10 py-8 space-y-8">
 
+          {/* ERROR */}
 
-
-          {/* ERROR MESSAGE */}
-
-          {
-            error && (
-
-              <p className="
+          {error && (
+            <p
+              className="
                 text-xs
                 tracking-wide
                 text-red-600
@@ -940,337 +567,191 @@ export default function Admin() {
                 px-4
                 py-3
                 rounded-xl
-              ">
-
-                {error}
-
-              </p>
-
-            )
-          }
-
-
-
-
+              "
+            >
+              {error}
+            </p>
+          )}
 
           {/* LOADING */}
 
-          {
-            loading && (
-
-              <p className="
-                text-xs
-                uppercase
-                tracking-[0.25em]
-                text-stone-400
-              ">
-
+          {loading &&
+            activeTab !==
+              "hero-sections" && (
+              <p
+                className="
+                  text-xs
+                  uppercase
+                  tracking-[0.25em]
+                  text-stone-400
+                "
+              >
                 Loading...
-
               </p>
+            )}
 
-            )
-          }
+          {/* ==========================
+              DASHBOARD
+          ========================== */}
 
-
-
-
-
-
-
-          {/* DASHBOARD */}
-
-          {
-            !loading &&
-            activeTab==="dashboard" && (
-
+          {!loading &&
+            activeTab ===
+              "dashboard" && (
               <>
-
-
                 <DashboardCards
                   stats={stats}
                 />
 
-
-
                 <OrdersTable
-
                   orders={activeOrders}
-
                   onApprove={
                     handleApproveOrder
                   }
-
                   onReject={
                     handleRejectOrder
                   }
-
                 />
-
-
               </>
+            )}
 
-            )
-          }
+          {/* ==========================
+              ORDERS
+          ========================== */}
 
-
-
-
-
-
-
-
-          {/* ORDERS */}
-
-          {
-            !loading &&
-            activeTab==="orders" && (
-
-
+          {!loading &&
+            activeTab === "orders" && (
               <OrdersTable
-
                 orders={activeOrders}
-
                 onApprove={
                   handleApproveOrder
                 }
-
                 onReject={
                   handleRejectOrder
                 }
-
               />
+            )}
 
+          {/* ==========================
+              CANCELLED
+          ========================== */}
 
-            )
-          }
-
-
-
-
-          {/* CANCELLED ORDERS */}
-
-          {
-            !loading &&
-            activeTab==="cancelled" && (
-
-
+          {!loading &&
+            activeTab ===
+              "cancelled" && (
               <OrdersTable
-
                 orders={cancelledOrders}
-
                 onApprove={
                   handleApproveOrder
                 }
-
                 onReject={
                   handleRejectOrder
                 }
-
               />
+            )}
 
+          {/* ==========================
+              PRODUCTS
+          ========================== */}
 
-            )
-          }
-
-
-
-
-
-
-
-
-
-          {/* PRODUCTS */}
-
-          {
-            !loading &&
-            activeTab==="products" && (
-
-
+          {!loading &&
+            activeTab ===
+              "products" && (
               <ProductsTable
-
-
                 products={products}
-
-
-
                 onAdd={
                   handleAddProduct
                 }
-
-
-
                 onEdit={
                   handleEditProduct
                 }
-
-
-
                 onDelete={
                   handleDeleteProduct
                 }
-
-
               />
+            )}
 
+          {/* ==========================
+              CUSTOMERS
+          ========================== */}
 
-            )
-          }
-
-
-
-
-
-
-
-
-          {/* CUSTOMERS */}
-
-          {
-            !loading &&
-            activeTab==="customers" && (
-
-
+          {!loading &&
+            activeTab ===
+              "customers" && (
               <CustomersTable
-
-                customers={customers}
-
+                customers={
+                  customers
+                }
               />
+            )}
 
+          {/* ==========================
+              ANALYTICS
+          ========================== */}
 
-            )
-          }
-
-
-
-
-
-
-
-
-
-          {/* ANALYTICS */}
-
-          {
-            !loading &&
-            activeTab==="analytics" && (
-
-
+          {!loading &&
+            activeTab ===
+              "analytics" && (
               <AnalyticsSection
-
-                analytics={analytics}
-
+                analytics={
+                  analytics
+                }
               />
+            )}
 
+          {/* ==========================
+              HERO SECTIONS
+          ========================== */}
 
-            )
-          }
+          {activeTab ===
+            "hero-sections" && (
+            <HeroSections />
+          )}
 
+          {/* ==========================
+              SETTINGS
+          ========================== */}
 
-
-
-
-
-
-
-
-          {/* SETTINGS */}
-
-          {
-            !loading &&
-            activeTab==="settings" && (
-
-
+          {!loading &&
+            activeTab ===
+              "settings" && (
               <SettingsSection
-
-                settings={settings}
-
+                settings={
+                  settings
+                }
                 onSave={
                   handleSaveSettings
                 }
-
               />
-
-
-            )
-          }
-
-
-
-
-
+            )}
         </main>
-
-
-
       </div>
 
+      {/* ==========================
+          PRODUCT MODAL
+      ========================== */}
 
+      {showProductModal && (
+        <ProductFormModal
+          open={
+            showProductModal
+          }
+          product={
+            editingProduct
+          }
+          onClose={() => {
+            setShowProductModal(
+              false
+            );
 
-
-
-
-
-
-      {/* PRODUCT ADD / EDIT MODAL */}
-
-      {
-        showProductModal && (
-
-
-          <ProductFormModal
-
-
-            open={showProductModal}
-
-
-            product={editingProduct}
-
-
-
-            onClose={()=>{
-
-
-              setShowProductModal(false);
-
-
-              setEditingProduct(null);
-
-
-            }}
-
-
-
-            onSave={
-              handleSaveProduct
-            }
-
-
-          />
-
-
-        )
-      }
-
-
-
-
-
-
+            setEditingProduct(
+              null
+            );
+          }}
+          onSave={
+            handleSaveProduct
+          }
+        />
+      )}
     </div>
-
   );
-
 }
-
-
-
-
-
-
-
-// =========================
-// END OF PART 2
-// Paste PART 3 below this line
-// =========================
