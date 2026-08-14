@@ -16,7 +16,6 @@ import Collection from "./pages/Collection";
 import Men from "./pages/Men";
 import Women from "./pages/Women";
 import SignIn from "./pages/SignIn";
-import FragranceHouse from "./pages/FragranceHouse";
 import NewArrival from "./pages/NewArrival";
 import BestSellers from "./pages/Bestsellers";
 import Cart from "./pages/Cart";
@@ -130,7 +129,6 @@ function App() {
         <Route path="/product/:id" element={<ProductDetails />} />
         <Route path="/men" element={<Men />} />
         <Route path="/women" element={<Women />} />
-        <Route path="/fragrance-house" element={<FragranceHouse />} />
         <Route path="/new-arrivals" element={<NewArrival />} />
         <Route path="/best-sellers" element={<BestSellers />} />
         <Route path="/search" element={<SearchPage />} />

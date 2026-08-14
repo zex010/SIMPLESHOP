@@ -1,80 +1,107 @@
+
 import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import ProductCard from "../components/ProductCard";
 
+const API_URL =
+  "https://avernus-api.onrender.com/api";
+
 function Men() {
   const [products, setProducts] = useState([]);
   const [hero, setHero] = useState(null);
-
-  const API_URL =
-    import.meta.env.VITE_API_URL ||
-    "https://avernus-api.onrender.com/api";
 
   // ==========================
   // LOAD MEN PRODUCTS
   // ==========================
 
   useEffect(() => {
-    fetch(`${API_URL}/products`)
-      .then((res) => res.json())
-      .then((data) => {
-        const all = data.products || [];
+    const loadProducts = async () => {
+      try {
+        const response = await fetch(
+          `${API_URL}/products`
+        );
 
-        const menProducts = all.filter(
+        const data = await response.json();
+
+        const allProducts = data.products || [];
+
+        const menProducts = allProducts.filter(
           (product) =>
             product.category &&
             product.category.trim().toLowerCase() === "men"
         );
 
         setProducts(menProducts);
-      })
-      .catch((error) => {
-        console.log("Products Error:", error);
-      });
-  }, [API_URL]);
+      } catch (error) {
+        console.error(
+          "Products Error:",
+          error
+        );
+      }
+    };
+
+    loadProducts();
+  }, []);
 
   // ==========================
   // LOAD MEN HERO
   // ==========================
 
   useEffect(() => {
-    fetch(`${API_URL}/hero-sections/men`)
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error("Failed to load Men hero");
-        }
+    const loadHero = async () => {
+      try {
+        const response = await fetch(
+          `${API_URL}/hero-sections/men`
+        );
 
-        return res.json();
-      })
-      .then((data) => {
-        console.log("Men Hero:", data);
+        const data = await response.json();
+
+        console.log(
+          "MEN HERO API RESPONSE:",
+          data
+        );
+
+        // Backend returns:
+        // {
+        //   success: true,
+        //   section: {...}
+        // }
 
         if (data.success && data.section) {
+          console.log(
+            "MEN HERO IMAGE:",
+            data.section.imageUrl
+          );
+
           setHero(data.section);
         } else {
-          setHero(null);
+          console.warn(
+            "No active Men hero section found.",
+            data
+          );
         }
-      })
-      .catch((error) => {
-        console.log("Hero Error:", error);
-        setHero(null);
-      });
-  }, [API_URL]);
+      } catch (error) {
+        console.error(
+          "Hero Section Error:",
+          error
+        );
+      }
+    };
+
+    loadHero();
+  }, []);
 
   // ==========================
-  // HERO VALUES
+  // HERO IMAGE
   // ==========================
 
-  const heroImage = hero?.imageUrl || "/men.jpg";
+  const heroImage =
+    hero?.imageUrl || "/men.jpg";
 
-  const heroTitle = hero?.title || "MEN";
-
-  const heroSubtitle =
-    hero?.subtitle || "Discover Masculine Fragrances";
-
-  const heroDescription =
-    hero?.description || "";
+  // ==========================
+  // PAGE
+  // ==========================
 
   return (
     <div className="min-h-screen bg-white text-black">
@@ -98,24 +125,18 @@ function Men() {
 
         <div className="relative z-10 text-center text-white px-6">
           <p className="uppercase tracking-[0.6em] text-xs mb-8">
-            AVERNUS
+            {hero?.subtitle ||
+              "THE VINTAGE BOUTIQUE"}
           </p>
 
-          <h1 className="font-serif text-6xl md:text-7xl tracking-[0.15em]">
-            {heroTitle}
+          <h1 className="font-serif text-7xl tracking-[0.15em]">
+            {hero?.title || "MEN"}
           </h1>
 
-          {heroSubtitle && (
-            <p className="mt-8 uppercase tracking-[0.35em] text-sm">
-              {heroSubtitle}
-            </p>
-          )}
-
-          {heroDescription && (
-            <p className="mt-5 max-w-2xl mx-auto text-sm md:text-base leading-7 text-white/90">
-              {heroDescription}
-            </p>
-          )}
+          <p className="mt-8 uppercase tracking-[0.35em] text-sm">
+            {hero?.description ||
+              "Discover Masculine Fragrances"}
+          </p>
         </div>
       </section>
 
@@ -131,7 +152,8 @@ function Men() {
             </h2>
 
             <p className="mt-4 text-gray-500">
-              Check that your database contains category: "Men"
+              Check that your database contains
+              category: "Men"
             </p>
           </div>
         ) : (
@@ -152,3 +174,4 @@ function Men() {
 }
 
 export default Men;
+
