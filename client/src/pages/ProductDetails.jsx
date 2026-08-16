@@ -1,106 +1,114 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Heart, Star, ChevronDown, ShoppingBag, Check } from "lucide-react";
+import {
+  Heart,
+  ShoppingBag,
+  Check,
+} from "lucide-react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { useShop } from "../context/ShopContext";
 
 /* ============================================================
    DEMO CATALOGUE
-   Used whenever the backend has no record for the requested id,
-   or the API call fails, so the page always has something rich
-   to show while real product data is wired up.
-   ============================================================ */
+============================================================ */
+
 const DEMO_PRODUCTS = [
   {
     _id: "avernus-aetheria",
     name: "Aetheria",
     brand: "AVERNUS",
+    category: "women",
     concentration: "Eau de Parfum",
     price: 220,
     rating: 4.8,
     isNew: true,
+
     description:
-      "A luminous opening of citrus and pear gives way to a heart of jasmine and iris, settling into a warm veil of white musk and cashmere wood. Aetheria was composed to feel like sunlight caught in glass — bright, weightless, and quietly radiant.",
+      "A luminous opening of citrus and pear gives way to a heart of jasmine and iris, settling into a warm veil of white musk and cashmere wood.",
+
     story:
-      "Aetheria began as a study of early morning light over the Mediterranean coast. Our perfumers spent two years refining the balance between the sheer citrus opening and the soft, skin-like musk base, aiming for a fragrance that reveals itself slowly rather than announcing itself all at once.",
+      "Aetheria began as a study of early morning light over the Mediterranean coast. Our perfumers spent two years refining the balance between the sheer citrus opening and the soft, skin-like musk base.",
+
     ingredients:
-      "Alcohol Denat., Parfum (Fragrance), Aqua (Water), Limonene, Linalool, Citral. Crafted without parabens or phthalates.",
+      "Alcohol Denat., Parfum (Fragrance), Aqua (Water), Limonene, Linalool, Citral.",
+
     notes: {
       top: ["Sicilian Bergamot", "Nashi Pear", "Pink Pepper"],
       heart: ["Jasmine Sambac", "Iris Root", "Orange Blossom"],
       base: ["White Musk", "Cashmere Wood", "Ambrette"],
     },
+
     images: [
-      "https://images.unsplash.com/photo-1541643600914-78b084683601?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1587017539504-67cfbddac569?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1615368144592-e2c2d4b3d8f3?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1541643600914-78b084683601?auto=format&fit=crop&w=2400&q=95&dpr=2",
+      "https://images.unsplash.com/photo-1587017539504-67cfbddac569?auto=format&fit=crop&w=2400&q=95&dpr=2",
     ],
   },
+
   {
     _id: "avernus-celestial-oud",
     name: "Celestial Oud",
     brand: "AVERNUS",
+    category: "men",
     concentration: "Pure Oud Parfum",
     price: 340,
     rating: 4.9,
     isNew: true,
+
     description:
-      "A commanding blend of rare oud, dark rose, and smoked woods. Celestial Oud is rich, resinous, and unapologetically opulent — built for those drawn to fragrances with real presence and remarkable longevity.",
+      "A commanding blend of rare oud, dark rose, and smoked woods. Rich, resinous, and unapologetically opulent.",
+
     story:
-      "Sourced from sustainably managed Agarwood plantations, the oud at the heart of this composition is aged for depth before being paired with Bulgarian rose and a whisper of incense, echoing the ceremonial fragrances of centuries past.",
+      "Sourced from sustainably managed Agarwood plantations, the oud at the heart of this composition is aged for depth before being paired with Bulgarian rose and incense.",
+
     ingredients:
-      "Alcohol Denat., Parfum (Fragrance), Aqua (Water), Eugenol, Benzyl Benzoate, Farnesol. Crafted without parabens or phthalates.",
+      "Alcohol Denat., Parfum (Fragrance), Aqua (Water), Eugenol, Benzyl Benzoate.",
+
     notes: {
       top: ["Saffron", "Black Pepper", "Bergamot"],
       heart: ["Bulgarian Rose", "Oud Wood", "Incense"],
       base: ["Amber", "Sandalwood", "Leather"],
     },
+
     images: [
-      "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1523293182086-7651a899d37f?auto=format&fit=crop&w=1200&q=80",
-    ],
-  },
-  {
-    _id: "avernus-velvet-moss",
-    name: "Velvet Moss",
-    brand: "AVERNUS",
-    concentration: "Eau de Parfum",
-    price: 195,
-    rating: 4.6,
-    isNew: false,
-    description:
-      "An earthy, green fragrance layered with soft florals and a mossy, forest-floor base. Velvet Moss is contemplative and grounded — an ode to quiet walks through old woodland after rain.",
-    story:
-      "Inspired by the damp undergrowth of the Vosges forest, Velvet Moss pairs oakmoss and vetiver with a delicate violet heart, resulting in a scent that feels both cultivated and completely natural.",
-    ingredients:
-      "Alcohol Denat., Parfum (Fragrance), Aqua (Water), Coumarin, Geraniol, Linalool. Crafted without parabens or phthalates.",
-    notes: {
-      top: ["Green Fig Leaf", "Cardamom", "Bergamot"],
-      heart: ["Violet", "Geranium", "Clary Sage"],
-      base: ["Oakmoss", "Vetiver", "Cedarwood"],
-    },
-    images: [
-      "https://images.unsplash.com/photo-1615529162924-f8605388461d?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1524634126442-357e0eac3c14?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&w=2400&q=95&dpr=2",
+      "https://images.unsplash.com/photo-1523293182086-7651a899d37f?auto=format&fit=crop&w=2400&q=95&dpr=2",
     ],
   },
 ];
 
-const DEFAULT_NOTES = { top: ["—"], heart: ["—"], base: ["—"] };
+const DEFAULT_NOTES = {
+  top: ["—"],
+  heart: ["—"],
+  base: ["—"],
+};
 
 const SIZE_OPTIONS = [
-  { label: "30ML", multiplier: 0.5 },
-  { label: "50ML", multiplier: 0.72 },
-  { label: "100ML", multiplier: 1 },
+  {
+    label: "30ML",
+    multiplier: 0.5,
+  },
+  {
+    label: "50ML",
+    multiplier: 0.72,
+  },
+  {
+    label: "100ML",
+    multiplier: 1,
+  },
 ];
 
 function getDemoProduct(id) {
-  return DEMO_PRODUCTS.find((p) => p._id === id) || DEMO_PRODUCTS[0];
+  return (
+    DEMO_PRODUCTS.find((product) => product._id === id) ||
+    DEMO_PRODUCTS[0]
+  );
 }
 
-// Fills in any fields a real backend record might not yet have
-// (notes, story, concentration, rating) so the layout never breaks.
+/* ============================================================
+   NORMALIZE PRODUCT
+============================================================ */
+
 function normalizeProduct(raw) {
   const fallback = getDemoProduct(raw._id);
 
@@ -108,17 +116,48 @@ function normalizeProduct(raw) {
     _id: raw._id,
     name: raw.name || fallback.name,
     brand: "AVERNUS",
-    concentration: raw.concentration || fallback.concentration,
+
+    category:
+      raw.category ||
+      fallback.category ||
+      "men",
+
+    concentration:
+      raw.concentration ||
+      fallback.concentration,
+
     price:
       (typeof raw.price === "string"
-        ? parseFloat(raw.price.replace(/[^0-9.]/g, ""))
-        : Number(raw.price)) || fallback.price,
-    rating: raw.rating || fallback.rating,
-    isNew: raw.isNew ?? fallback.isNew,
-    description: raw.description || fallback.description,
-    story: raw.story || fallback.story,
-    ingredients: raw.ingredients || fallback.ingredients,
-    notes: raw.notes || fallback.notes || DEFAULT_NOTES,
+        ? parseFloat(
+            raw.price.replace(/[^0-9.]/g, "")
+          )
+        : Number(raw.price)) ||
+      fallback.price,
+
+    rating:
+      raw.rating ||
+      fallback.rating,
+
+    isNew:
+      raw.isNew ?? fallback.isNew,
+
+    description:
+      raw.description ||
+      fallback.description,
+
+    story:
+      raw.story ||
+      fallback.story,
+
+    ingredients:
+      raw.ingredients ||
+      fallback.ingredients,
+
+    notes:
+      raw.notes ||
+      fallback.notes ||
+      DEFAULT_NOTES,
+
     images:
       raw.images?.length > 0
         ? raw.images
@@ -128,52 +167,115 @@ function normalizeProduct(raw) {
   };
 }
 
-// 1. Updated image resolver to support placeholders and strip leading slashes
+/* ============================================================
+   IMAGE RESOLVER
+============================================================ */
+
 function resolveImageSrc(src) {
   if (!src) return "/placeholder.jpg";
 
   if (src.startsWith("http")) {
+    if (src.includes("images.unsplash.com")) {
+      try {
+        const url = new URL(src);
+
+        url.searchParams.set("auto", "format");
+        url.searchParams.set("fit", "crop");
+        url.searchParams.set("w", "2400");
+        url.searchParams.set("q", "95");
+        url.searchParams.set("dpr", "2");
+
+        return url.toString();
+      } catch {
+        return src;
+      }
+    }
+
     return src;
   }
 
-  return `https://avernus-api.onrender.com/${src.replace(/^\/+/, "")}`;
+  return `https://avernus-api.onrender.com/${src.replace(
+    /^\/+/,
+    ""
+  )}`;
 }
+
+/* ============================================================
+   PRODUCT DETAILS
+============================================================ */
 
 function ProductDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  // Connected to ShopContext
-  const { addToCart, wishlist, addToWishlist, removeFromWishlist } = useShop();
+  const {
+    addToCart,
+    wishlist,
+    addToWishlist,
+    removeFromWishlist,
+  } = useShop();
 
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [selectedSize, setSelectedSize] = useState("50ML");
-  const [activeImage, setActiveImage] = useState(0);
-  const [imageFading, setImageFading] = useState(false);
-  const [openSection, setOpenSection] = useState("top");
-  const [justAdded, setJustAdded] = useState(false);
+
+  const [selectedSize, setSelectedSize] =
+    useState("50ML");
+
+  const [activeImage, setActiveImage] =
+    useState(0);
+
+  const [justAdded, setJustAdded] =
+    useState(false);
+
+  /* ==========================================================
+     LOAD PRODUCT
+  ========================================================== */
 
   useEffect(() => {
     let cancelled = false;
+
     setLoading(true);
     setActiveImage(0);
 
-    fetch(`https://avernus-api.onrender.com/api/products/${id}`)
+    fetch(
+      `https://avernus-api.onrender.com/api/products/${id}`
+    )
       .then((res) => {
-        if (!res.ok) throw new Error("Product not found");
+        if (!res.ok) {
+          throw new Error("Product not found");
+        }
+
         return res.json();
       })
       .then((data) => {
         if (cancelled) return;
-        const found = data.product || data.data || data;
-        setProduct(found?.name ? normalizeProduct(found) : normalizeProduct(getDemoProduct(id)));
+
+        const found =
+          data.product ||
+          data.data ||
+          data;
+
+        setProduct(
+          found?.name
+            ? normalizeProduct(found)
+            : normalizeProduct(
+                getDemoProduct(id)
+              )
+        );
       })
       .catch(() => {
-        if (!cancelled) setProduct(normalizeProduct(getDemoProduct(id)));
+        if (!cancelled) {
+          setProduct(
+            normalizeProduct(
+              getDemoProduct(id)
+            )
+          );
+        }
       })
       .finally(() => {
-        if (!cancelled) setLoading(false);
+        if (!cancelled) {
+          setLoading(false);
+        }
       });
 
     return () => {
@@ -181,66 +283,98 @@ function ProductDetails() {
     };
   }, [id]);
 
+  /* ==========================================================
+     LOADING
+  ========================================================== */
+
   if (loading || !product) {
     return (
       <div className="min-h-screen bg-white">
         <Navbar />
-        <div className="h-[60vh] flex items-center justify-center font-serif text-sm uppercase tracking-[0.5em] text-stone-400">
-          Loading...
+
+        <div className="min-h-[calc(100svh-70px)] flex items-center justify-center">
+          <p className="font-serif text-[10px] uppercase tracking-[0.5em] text-stone-400">
+            Loading...
+          </p>
         </div>
+
         <Footer />
       </div>
     );
   }
 
-  const images = product.images;
-  const sizeInfo = SIZE_OPTIONS.find((s) => s.label === selectedSize) || SIZE_OPTIONS[1];
-  const displayedPrice = Math.round(product.price * sizeInfo.multiplier);
-  const roundedRating = Math.round(product.rating);
+  /* ==========================================================
+     DATA
+  ========================================================== */
 
-  // Check if item currently exists in wishlist context
-  const isWishlisted = wishlist?.some((p) => p._id === product._id) || false;
+  const images = product.images || [];
 
-  const handleThumbnailClick = (index) => {
-    if (index === activeImage) return;
-    setImageFading(true);
-    setTimeout(() => {
-      setActiveImage(index);
-      setImageFading(false);
-    }, 150);
-  };
+  const sizeInfo =
+    SIZE_OPTIONS.find(
+      (size) =>
+        size.label === selectedSize
+    ) || SIZE_OPTIONS[1];
 
-  // 2. Updated handleAddToBag to preserve full product details + log
+  const displayedPrice = Math.round(
+    product.price *
+      sizeInfo.multiplier
+  );
+
+  const category =
+    product.category
+      ?.trim()
+      .toLowerCase();
+
+  const gender =
+    category === "women"
+      ? "FEMININE"
+      : "MASCULINE";
+
+  const isWishlisted =
+    wishlist?.some(
+      (item) =>
+        item._id === product._id
+    ) || false;
+
+  /* ==========================================================
+     ADD TO BAG
+  ========================================================== */
+
   const handleAddToBag = () => {
     const cartProduct = {
       ...product,
       _id: product._id,
       name: product.name,
       brand: product.brand,
-      concentration: product.concentration,
+      concentration:
+        product.concentration,
       price: displayedPrice,
       image: images[0],
       selectedSize,
       qty: 1,
     };
 
-    console.log("Cart Product:", cartProduct);
-
     addToCart(cartProduct);
 
     setJustAdded(true);
-    setTimeout(() => setJustAdded(false), 1800);
+
+    setTimeout(() => {
+      setJustAdded(false);
+    }, 1800);
   };
 
-  // Adds the item to the cart (same shape as Add to Bag) and jumps
-  // straight to checkout, skipping the cart page.
+  /* ==========================================================
+     BUY NOW
+  ========================================================== */
+
   const handleBuyNow = () => {
     const cartProduct = {
       ...product,
       _id: product._id,
       name: product.name,
       brand: product.brand,
-      concentration: product.concentration,
+      concentration:
+        product.concentration,
       price: displayedPrice,
       image: images[0],
       selectedSize,
@@ -248,198 +382,869 @@ function ProductDetails() {
     };
 
     addToCart(cartProduct);
+
     navigate("/checkout");
   };
 
-  const toggleSection = (key) => {
-    setOpenSection((prev) => (prev === key ? null : key));
-  };
-
-  const accordionItems = [
-    { key: "top", title: "Top Notes", content: product.notes.top?.join(", ") },
-    { key: "heart", title: "Heart Notes", content: product.notes.heart?.join(", ") },
-    { key: "base", title: "Base Notes", content: product.notes.base?.join(", ") },
-    { key: "story", title: "The Story", content: product.story },
-    { key: "ingredients", title: "Ingredients", content: product.ingredients },
-    {
-      key: "shipping",
-      title: "Shipping & Returns",
-      content:
-        "Complimentary shipping on all orders. Returns accepted within 30 days of delivery, provided the seal is intact.",
-    },
-  ];
+  /* ==========================================================
+     PAGE
+  ========================================================== */
 
   return (
-    <div className="min-h-screen bg-white text-stone-900 antialiased">
+    <div className="min-h-screen bg-white text-black">
       <Navbar />
 
-      <section className="max-w-7xl mx-auto px-4 md:px-8 py-10 md:py-16 grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-20">
-        {/* ================= LEFT: GALLERY ================= */}
-        <div>
-          <div className="relative w-full aspect-square bg-[#f8f8f8] overflow-hidden">
-            {product.isNew && (
-              <span className="absolute top-5 left-5 z-10 bg-white px-3 py-1 text-[10px] uppercase tracking-[0.35em] shadow-sm">
-                New
-              </span>
-            )}
-            <img
-              src={resolveImageSrc(images[activeImage])}
-              alt={product.name}
-              className={`w-full h-full object-contain p-8 md:p-14 transition-opacity duration-150 ${
-                imageFading ? "opacity-0" : "opacity-100"
-              }`}
-            />
-          </div>
+      {/* ======================================================
+          PRODUCT HERO
+      ====================================================== */}
 
-          {images.length > 1 && (
-            <div className="mt-4 grid grid-cols-4 sm:grid-cols-5 gap-3">
-              {images.map((img, index) => (
+      <section
+        className="
+          relative
+          w-full
+          min-h-[620px]
+          h-[calc(100svh-64px)]
+          max-h-[900px]
+          overflow-hidden
+          bg-black
+        "
+      >
+        {/* ====================================================
+            IMAGE — LEFT / HALF OF HERO
+        ==================================================== */}
+
+        <div
+          className="
+            absolute
+            inset-y-0
+            left-0
+            w-full
+            md:w-[54%]
+            overflow-hidden
+            bg-black
+          "
+        >
+          <img
+            key={resolveImageSrc(
+              images[activeImage]
+            )}
+            src={resolveImageSrc(
+              images[activeImage]
+            )}
+            alt={product.name}
+            loading="eager"
+            decoding="async"
+            fetchPriority="high"
+            sizes="(max-width: 768px) 100vw, 54vw"
+            className="
+              absolute
+              inset-0
+              w-full
+              h-full
+              object-cover
+              object-center
+              select-none
+            "
+            draggable="false"
+          />
+
+          {/* IMAGE SHADING */}
+          <div
+            className="
+              absolute
+              inset-0
+              bg-gradient-to-r
+              from-black/5
+              via-transparent
+              to-black/20
+            "
+          />
+        </div>
+
+        {/* ====================================================
+            RIGHT SIDE DARK PRODUCT PANEL
+        ==================================================== */}
+
+        <div
+          className="
+            absolute
+            inset-y-0
+            right-0
+            w-full
+            md:w-[46%]
+            bg-black/80
+            md:bg-black
+          "
+        />
+
+        {/* ====================================================
+            MOBILE IMAGE OVERLAY
+        ==================================================== */}
+
+        <div
+          className="
+            absolute
+            inset-0
+            md:hidden
+            bg-gradient-to-t
+            from-black/95
+            via-black/35
+            to-transparent
+          "
+        />
+
+        {/* ====================================================
+            THUMBNAILS
+        ==================================================== */}
+
+        {images.length > 1 && (
+          <div
+            className="
+              absolute
+              right-4
+              md:right-[47%]
+              top-1/2
+              -translate-y-1/2
+              z-30
+              flex
+              flex-col
+              gap-2
+            "
+          >
+            {images.map(
+              (image, index) => (
                 <button
                   key={index}
                   type="button"
-                  onClick={() => handleThumbnailClick(index)}
-                  aria-label={`View image ${index + 1}`}
-                  className={`aspect-square bg-[#f8f8f8] overflow-hidden border transition-colors cursor-pointer ${
-                    activeImage === index
-                      ? "border-stone-900"
-                      : "border-transparent hover:border-stone-300"
-                  }`}
+                  onClick={() =>
+                    setActiveImage(
+                      index
+                    )
+                  }
+                  className={`
+                    w-10
+                    h-10
+                    md:w-12
+                    md:h-12
+                    overflow-hidden
+                    border
+                    transition
+                    bg-black/20
+                    ${
+                      activeImage ===
+                      index
+                        ? "border-white"
+                        : "border-white/30"
+                    }
+                  `}
                 >
                   <img
-                    src={resolveImageSrc(img)}
-                    alt={`${product.name} ${index + 1}`}
-                    className="w-full h-full object-contain p-2"
+                    src={resolveImageSrc(
+                      image
+                    )}
+                    alt={`${product.name} ${
+                      index + 1
+                    }`}
+                    className="
+                      w-full
+                      h-full
+                      object-cover
+                    "
                   />
                 </button>
-              ))}
-            </div>
-          )}
-        </div>
+              )
+            )}
+          </div>
+        )}
 
-        {/* ================= RIGHT: DETAILS ================= */}
-        <div className="flex flex-col lg:pt-2">
-          <p className="uppercase tracking-[0.35em] text-xs text-stone-400">
+        {/* ====================================================
+            PRODUCT DETAILS
+        ==================================================== */}
+
+        <div
+          className="
+            absolute
+            z-20
+            left-0
+            right-0
+            bottom-0
+            md:left-[54%]
+            md:right-0
+            md:top-0
+            md:bottom-0
+            flex
+            items-end
+            md:items-center
+            px-5
+            sm:px-8
+            md:px-10
+            lg:px-14
+            pb-7
+            sm:pb-9
+            md:pb-10
+          "
+        >
+          <div className="w-full">
+
+            {/* NEW */}
+            <p
+              className="
+                uppercase
+                tracking-[0.5em]
+                text-[9px]
+                md:text-[10px]
+                text-white
+                mb-3
+              "
+            >
+              {product.isNew
+                ? "NEW ARRIVAL"
+                : "AVERNUS"}
+            </p>
+
+            {/* GENDER */}
+            <p
+              className="
+                uppercase
+                tracking-[0.3em]
+                text-[9px]
+                md:text-[10px]
+                text-white/60
+                mb-3
+              "
+            >
+              {gender}
+            </p>
+
+            {/* BRAND */}
+            <p
+              className="
+                uppercase
+                tracking-[0.3em]
+                text-[9px]
+                md:text-[10px]
+                text-white/80
+                mb-2
+              "
+            >
+              {product.brand}
+            </p>
+
+            {/* NAME */}
+            <h1
+              className="
+                font-serif
+                font-normal
+                text-4xl
+                sm:text-5xl
+                md:text-5xl
+                lg:text-6xl
+                leading-none
+                tracking-[0.04em]
+                text-white
+              "
+            >
+              {product.name}
+            </h1>
+
+            {/* PRICE */}
+            <p
+              className="
+                mt-4
+                text-xs
+                md:text-sm
+                uppercase
+                tracking-[0.25em]
+                font-light
+                text-white
+              "
+            >
+              ${displayedPrice}
+            </p>
+
+            {/* SIZE */}
+            <div
+              className="
+                flex
+                gap-2
+                mt-5
+              "
+            >
+              {SIZE_OPTIONS.map(
+                (size) => (
+                  <button
+                    key={size.label}
+                    type="button"
+                    onClick={() =>
+                      setSelectedSize(
+                        size.label
+                      )
+                    }
+                    className={`
+                      px-4
+                      sm:px-5
+                      py-2
+                      border
+                      uppercase
+                      tracking-[0.15em]
+                      text-[8px]
+                      sm:text-[9px]
+                      transition
+                      ${
+                        selectedSize ===
+                        size.label
+                          ? "bg-white text-black border-white"
+                          : "border-white/50 text-white hover:bg-white/10"
+                      }
+                    `}
+                  >
+                    {size.label}
+                  </button>
+                )
+              )}
+            </div>
+
+            {/* ACTIONS */}
+            <div
+              className="
+                flex
+                flex-wrap
+                items-center
+                gap-2
+                mt-5
+              "
+            >
+              {/* ADD */}
+              <button
+                type="button"
+                onClick={
+                  handleAddToBag
+                }
+                className="
+                  inline-flex
+                  items-center
+                  justify-center
+                  gap-2
+                  bg-white
+                  text-black
+                  px-5
+                  sm:px-7
+                  py-3
+                  md:py-3.5
+                  uppercase
+                  tracking-[0.2em]
+                  text-[8px]
+                  sm:text-[9px]
+                  font-medium
+                  hover:bg-stone-100
+                  transition
+                "
+              >
+                {justAdded ? (
+                  <>
+                    <Check
+                      size={14}
+                    />
+                    Added
+                  </>
+                ) : (
+                  <>
+                    <ShoppingBag
+                      size={14}
+                    />
+                    Add to Bag
+                  </>
+                )}
+              </button>
+
+              {/* BUY */}
+              <button
+                type="button"
+                onClick={
+                  handleBuyNow
+                }
+                className="
+                  inline-flex
+                  items-center
+                  justify-center
+                  border
+                  border-white
+                  text-white
+                  px-5
+                  sm:px-7
+                  py-3
+                  md:py-3.5
+                  uppercase
+                  tracking-[0.2em]
+                  text-[8px]
+                  sm:text-[9px]
+                  hover:bg-white
+                  hover:text-black
+                  transition
+                "
+              >
+                Buy Now
+              </button>
+
+              {/* WISHLIST */}
+              <button
+                type="button"
+                onClick={() =>
+                  isWishlisted
+                    ? removeFromWishlist(
+                        product._id
+                      )
+                    : addToWishlist(
+                        product
+                      )
+                }
+                aria-label={
+                  isWishlisted
+                    ? "Remove from wishlist"
+                    : "Add to wishlist"
+                }
+                className={`
+                  w-[42px]
+                  h-[42px]
+                  md:w-[46px]
+                  md:h-[46px]
+                  flex
+                  items-center
+                  justify-center
+                  border
+                  transition
+                  ${
+                    isWishlisted
+                      ? "bg-white text-black border-white"
+                      : "border-white/50 text-white hover:bg-white hover:text-black"
+                  }
+                `}
+              >
+                <Heart
+                  size={16}
+                  className={
+                    isWishlisted
+                      ? "fill-current"
+                      : ""
+                  }
+                />
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ======================================================
+          PRODUCT INFORMATION
+      ====================================================== */}
+
+      <section
+        className="
+          max-w-6xl
+          mx-auto
+          px-5
+          sm:px-8
+          md:px-12
+          py-16
+          md:py-24
+        "
+      >
+
+        {/* ====================================================
+            INTRO
+        ==================================================== */}
+
+        <div
+          className="
+            max-w-3xl
+            mx-auto
+            text-center
+          "
+        >
+          <p
+            className="
+              uppercase
+              tracking-[0.45em]
+              text-[9px]
+              md:text-[10px]
+              text-stone-400
+            "
+          >
             {product.concentration}
           </p>
 
-          <h1 className="mt-3 font-serif text-3xl md:text-4xl lg:text-5xl leading-[1.15] tracking-tight">
-            AVERNUS — {product.name}
-          </h1>
+          <h2
+            className="
+              mt-4
+              font-serif
+              text-2xl
+              md:text-3xl
+              font-normal
+              tracking-wide
+            "
+          >
+            The Essence of{" "}
+            {product.name}
+          </h2>
 
-          <div className="flex items-center gap-2 mt-5">
-            {[1, 2, 3, 4, 5].map((n) => (
-              <Star
-                key={n}
-                size={14}
-                strokeWidth={1.5}
-                className={n <= roundedRating ? "fill-stone-900 text-stone-900" : "text-stone-300"}
-              />
-            ))}
-            <span className="text-xs text-stone-400 tracking-wide">{product.rating.toFixed(1)}</span>
-          </div>
-
-          <p className="mt-6 font-serif text-2xl md:text-3xl">${displayedPrice}</p>
-
-          <p className="mt-6 text-stone-600 text-sm md:text-base leading-relaxed max-w-md">
+          <p
+            className="
+              mt-5
+              text-xs
+              md:text-sm
+              text-stone-500
+              leading-7
+              max-w-2xl
+              mx-auto
+            "
+          >
             {product.description}
           </p>
+        </div>
 
-          {/* SIZE SELECTOR PILLS */}
-          <div className="mt-9">
-            <p className="uppercase text-[11px] tracking-[0.3em] text-stone-400 mb-3">Size</p>
-            <div className="flex gap-3">
-              {SIZE_OPTIONS.map((size) => (
-                <button
-                  key={size.label}
-                  type="button"
-                  onClick={() => setSelectedSize(size.label)}
-                  className={`px-5 py-2.5 rounded-full text-xs font-medium tracking-[0.15em] transition-all duration-200 cursor-pointer ${
-                    selectedSize === size.label
-                      ? "bg-black text-white"
-                      : "bg-white text-stone-700 border border-stone-300 hover:border-stone-900"
-                  }`}
-                >
-                  {size.label}
-                </button>
-              ))}
+        {/* ====================================================
+            SPACE BEFORE NOTES
+        ==================================================== */}
+
+        <div className="mt-14 md:mt-20">
+
+          {/* ==================================================
+              FRAGRANCE NOTES
+          ================================================== */}
+
+          <div
+            className="
+              grid
+              grid-cols-1
+              md:grid-cols-3
+              gap-4
+              md:gap-5
+            "
+          >
+
+            {/* TOP NOTES */}
+            <div
+              className="
+                bg-stone-50
+                px-6
+                md:px-8
+                py-8
+                md:py-10
+                min-h-[230px]
+              "
+            >
+              <p
+                className="
+                  uppercase
+                  tracking-[0.3em]
+                  text-[9px]
+                  text-stone-400
+                "
+              >
+                Top Notes
+              </p>
+
+              <h3
+                className="
+                  mt-3
+                  font-serif
+                  text-xl
+                  md:text-2xl
+                  font-normal
+                "
+              >
+                First Impression
+              </h3>
+
+              <div className="mt-6 space-y-2">
+                {product.notes.top?.map(
+                  (note, index) => (
+                    <p
+                      key={index}
+                      className="
+                        text-xs
+                        md:text-sm
+                        text-stone-600
+                      "
+                    >
+                      {note}
+                    </p>
+                  )
+                )}
+              </div>
+            </div>
+
+            {/* HEART NOTES */}
+            <div
+              className="
+                bg-stone-50
+                px-6
+                md:px-8
+                py-8
+                md:py-10
+                min-h-[230px]
+              "
+            >
+              <p
+                className="
+                  uppercase
+                  tracking-[0.3em]
+                  text-[9px]
+                  text-stone-400
+                "
+              >
+                Heart Notes
+              </p>
+
+              <h3
+                className="
+                  mt-3
+                  font-serif
+                  text-xl
+                  md:text-2xl
+                  font-normal
+                "
+              >
+                The Character
+              </h3>
+
+              <div className="mt-6 space-y-2">
+                {product.notes.heart?.map(
+                  (note, index) => (
+                    <p
+                      key={index}
+                      className="
+                        text-xs
+                        md:text-sm
+                        text-stone-600
+                      "
+                    >
+                      {note}
+                    </p>
+                  )
+                )}
+              </div>
+            </div>
+
+            {/* BASE NOTES */}
+            <div
+              className="
+                bg-stone-50
+                px-6
+                md:px-8
+                py-8
+                md:py-10
+                min-h-[230px]
+              "
+            >
+              <p
+                className="
+                  uppercase
+                  tracking-[0.3em]
+                  text-[9px]
+                  text-stone-400
+                "
+              >
+                Base Notes
+              </p>
+
+              <h3
+                className="
+                  mt-3
+                  font-serif
+                  text-xl
+                  md:text-2xl
+                  font-normal
+                "
+              >
+                The Signature
+              </h3>
+
+              <div className="mt-6 space-y-2">
+                {product.notes.base?.map(
+                  (note, index) => (
+                    <p
+                      key={index}
+                      className="
+                        text-xs
+                        md:text-sm
+                        text-stone-600
+                      "
+                    >
+                      {note}
+                    </p>
+                  )
+                )}
+              </div>
             </div>
           </div>
 
-          {/* ADD TO BAG + BUY NOW + WISHLIST */}
-          <div className="mt-9 flex items-center gap-3">
-            <button
-              type="button"
-              onClick={handleAddToBag}
-              className="flex-1 inline-flex items-center justify-center gap-3 bg-black text-white py-4 uppercase tracking-[0.25em] text-xs font-semibold transition-all duration-300 hover:bg-stone-800 active:scale-[0.99] cursor-pointer"
+          {/* ==================================================
+              SPACE BETWEEN NOTES AND DETAILS
+          ================================================== */}
+
+          <div className="h-6 md:h-8" />
+
+          {/* ==================================================
+              STORY / INGREDIENTS / SHIPPING
+              SAME STYLE AS NOTES
+          ================================================== */}
+
+          <div
+            className="
+              grid
+              grid-cols-1
+              md:grid-cols-3
+              gap-4
+              md:gap-5
+            "
+          >
+
+            {/* STORY */}
+            <div
+              className="
+                bg-stone-50
+                px-6
+                md:px-8
+                py-8
+                md:py-10
+                min-h-[250px]
+              "
             >
-              {justAdded ? (
-                <>
-                  <Check size={16} />
-                  Added to Bag
-                </>
-              ) : (
-                <>
-                  <ShoppingBag size={16} />
-                  Add to Bag
-                </>
-              )}
-            </button>
+              <p
+                className="
+                  uppercase
+                  tracking-[0.3em]
+                  text-[9px]
+                  text-stone-400
+                "
+              >
+                The Story
+              </p>
 
-            <button
-              type="button"
-              onClick={handleBuyNow}
-              className="flex-1 inline-flex items-center justify-center gap-3 border border-black text-black py-4 uppercase tracking-[0.25em] text-xs font-semibold transition-all duration-300 hover:bg-black hover:text-white active:scale-[0.99] cursor-pointer"
+              <h3
+                className="
+                  mt-3
+                  font-serif
+                  text-xl
+                  md:text-2xl
+                  font-normal
+                "
+              >
+                The Inspiration
+              </h3>
+
+              <p
+                className="
+                  mt-6
+                  text-xs
+                  md:text-sm
+                  text-stone-600
+                  leading-7
+                "
+              >
+                {product.story}
+              </p>
+            </div>
+
+            {/* INGREDIENTS */}
+            <div
+              className="
+                bg-stone-50
+                px-6
+                md:px-8
+                py-8
+                md:py-10
+                min-h-[250px]
+              "
             >
-              Buy Now
-            </button>
+              <p
+                className="
+                  uppercase
+                  tracking-[0.3em]
+                  text-[9px]
+                  text-stone-400
+                "
+              >
+                Ingredients
+              </p>
 
-            <button
-              type="button"
-              onClick={() =>
-                isWishlisted ? removeFromWishlist(product._id) : addToWishlist(product)
-              }
-              aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
-              className={`h-[52px] w-[52px] shrink-0 flex items-center justify-center border transition-all duration-200 cursor-pointer ${
-                isWishlisted
-                  ? "bg-black border-black text-white"
-                  : "border-stone-300 text-stone-700 hover:border-stone-900"
-              }`}
+              <h3
+                className="
+                  mt-3
+                  font-serif
+                  text-xl
+                  md:text-2xl
+                  font-normal
+                "
+              >
+                The Composition
+              </h3>
+
+              <p
+                className="
+                  mt-6
+                  text-xs
+                  md:text-sm
+                  text-stone-600
+                  leading-7
+                "
+              >
+                {product.ingredients}
+              </p>
+            </div>
+
+            {/* SHIPPING */}
+            <div
+              className="
+                bg-stone-50
+                px-6
+                md:px-8
+                py-8
+                md:py-10
+                min-h-[250px]
+              "
             >
-              <Heart size={18} className={isWishlisted ? "fill-current" : ""} />
-            </button>
-          </div>
+              <p
+                className="
+                  uppercase
+                  tracking-[0.3em]
+                  text-[9px]
+                  text-stone-400
+                "
+              >
+                Shipping & Returns
+              </p>
 
-          {/* FRAGRANCE PYRAMID + STORY ACCORDION */}
-          <div className="mt-12 border-t border-stone-200">
-            {accordionItems.map((item) => (
-              <div key={item.key} className="border-b border-stone-200">
-                <button
-                  type="button"
-                  onClick={() => toggleSection(item.key)}
-                  className="w-full flex items-center justify-between py-5 text-left cursor-pointer"
-                >
-                  <span className="uppercase tracking-[0.2em] text-xs md:text-sm font-medium text-stone-900">
-                    {item.title}
-                  </span>
-                  <ChevronDown
-                    size={16}
-                    className={`text-stone-500 transition-transform duration-300 ${
-                      openSection === item.key ? "rotate-180" : ""
-                    }`}
-                  />
-                </button>
+              <h3
+                className="
+                  mt-3
+                  font-serif
+                  text-xl
+                  md:text-2xl
+                  font-normal
+                "
+              >
+                Delivery
+              </h3>
 
-                <div
-                  className={`grid transition-all duration-300 ease-in-out ${
-                    openSection === item.key ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
-                  }`}
-                >
-                  <div className="overflow-hidden">
-                    <p className="pb-5 text-sm text-stone-600 leading-relaxed">{item.content}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
+              <p
+                className="
+                  mt-6
+                  text-xs
+                  md:text-sm
+                  text-stone-600
+                  leading-7
+                "
+              >
+                Complimentary shipping
+                on all orders. Returns
+                are accepted within 30
+                days of delivery, provided
+                the fragrance seal remains
+                intact.
+              </p>
+            </div>
           </div>
         </div>
       </section>

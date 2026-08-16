@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
@@ -11,9 +10,9 @@ function Men() {
   const [products, setProducts] = useState([]);
   const [hero, setHero] = useState(null);
 
-  // ==========================
+  // =========================================================
   // LOAD MEN PRODUCTS
-  // ==========================
+  // =========================================================
 
   useEffect(() => {
     const loadProducts = async () => {
@@ -24,13 +23,17 @@ function Men() {
 
         const data = await response.json();
 
-        const allProducts = data.products || [];
+        const allProducts =
+          data.products || [];
 
-        const menProducts = allProducts.filter(
-          (product) =>
-            product.category &&
-            product.category.trim().toLowerCase() === "men"
-        );
+        const menProducts =
+          allProducts.filter(
+            (product) =>
+              product.category &&
+              product.category
+                .trim()
+                .toLowerCase() === "men"
+          );
 
         setProducts(menProducts);
       } catch (error) {
@@ -44,9 +47,9 @@ function Men() {
     loadProducts();
   }, []);
 
-  // ==========================
+  // =========================================================
   // LOAD MEN HERO
-  // ==========================
+  // =========================================================
 
   useEffect(() => {
     const loadHero = async () => {
@@ -55,31 +58,14 @@ function Men() {
           `${API_URL}/hero-sections/men`
         );
 
-        const data = await response.json();
+        const data =
+          await response.json();
 
-        console.log(
-          "MEN HERO API RESPONSE:",
-          data
-        );
-
-        // Backend returns:
-        // {
-        //   success: true,
-        //   section: {...}
-        // }
-
-        if (data.success && data.section) {
-          console.log(
-            "MEN HERO IMAGE:",
-            data.section.imageUrl
-          );
-
+        if (
+          data.success &&
+          data.section
+        ) {
           setHero(data.section);
-        } else {
-          console.warn(
-            "No active Men hero section found.",
-            data
-          );
         }
       } catch (error) {
         console.error(
@@ -92,80 +78,306 @@ function Men() {
     loadHero();
   }, []);
 
-  // ==========================
+  // =========================================================
   // HERO IMAGE
-  // ==========================
+  // =========================================================
 
   const heroImage =
     hero?.imageUrl || "/men.jpg";
 
-  // ==========================
+  // =========================================================
   // PAGE
-  // ==========================
+  // =========================================================
 
   return (
     <div className="min-h-screen bg-white text-black">
       <Navbar />
 
-      {/* ==========================
+      {/* =====================================================
           HERO
-      ========================== */}
+          SAME STYLE AS NEW ARRIVALS
+          LEFT  = TEXT
+          RIGHT = IMAGE
+      ===================================================== */}
 
       <section
-        className="relative h-[75vh] bg-cover bg-center flex items-center justify-center"
-        style={{
-          backgroundImage: `url("${heroImage}")`,
-        }}
+        className="
+          relative
+          w-full
+          min-h-[calc(100svh-70px)]
+          md:min-h-[calc(100vh-70px)]
+          flex
+          flex-col
+          md:flex-row
+          overflow-hidden
+          bg-[#f7f6f3]
+        "
       >
-        {/* OVERLAY */}
 
-        <div className="absolute inset-0 bg-black/40"></div>
+        {/* ===================================================
+            LEFT — TEXT
+        =================================================== */}
 
-        {/* HERO CONTENT */}
+        <div
+          className="
+            w-full
+            md:w-1/2
+            min-h-[48vh]
+            md:min-h-0
+            flex
+            items-center
+            justify-center
+            bg-[#f7f6f3]
+            px-6
+            sm:px-10
+            md:px-12
+            lg:px-20
+            py-16
+            md:py-10
+          "
+        >
+          <div
+            className="
+              text-center
+              max-w-xl
+            "
+          >
 
-        <div className="relative z-10 text-center text-white px-6">
-          <p className="uppercase tracking-[0.6em] text-xs mb-8">
-            {hero?.subtitle ||
-              "THE VINTAGE BOUTIQUE"}
-          </p>
+            {/* SMALL LABEL */}
 
-          <h1 className="font-serif text-7xl tracking-[0.15em]">
-            {hero?.title || "MEN"}
-          </h1>
+            <p
+              className="
+                uppercase
+                tracking-[0.5em]
+                text-[9px]
+                sm:text-[10px]
+                md:text-xs
+                text-stone-400
+                mb-6
+                md:mb-8
+              "
+            >
+              {hero?.subtitle ||
+                "THE HOUSE OF AVERNUS"}
+            </p>
 
-          <p className="mt-8 uppercase tracking-[0.35em] text-sm">
-            {hero?.description ||
-              "Discover Masculine Fragrances"}
-          </p>
+            {/* MAIN TITLE */}
+
+            <h1
+              className="
+                font-serif
+                font-normal
+                uppercase
+                text-6xl
+                sm:text-7xl
+                md:text-8xl
+                lg:text-9xl
+                xl:text-[10rem]
+                leading-[0.85]
+                tracking-[0.04em]
+              "
+            >
+              {hero?.title || "MEN"}
+            </h1>
+
+            {/* DESCRIPTION */}
+
+            <p
+              className="
+                mt-8
+                md:mt-10
+                uppercase
+                tracking-[0.25em]
+                text-[9px]
+                sm:text-[10px]
+                md:text-xs
+                text-stone-500
+                leading-6
+                max-w-md
+                mx-auto
+              "
+            >
+              {hero?.description ||
+                "Discover Masculine Fragrances"}
+            </p>
+
+            {/* SMALL DECORATIVE LINE */}
+
+            <div
+              className="
+                mx-auto
+                mt-8
+                w-12
+                h-px
+                bg-stone-300
+              "
+            />
+
+          </div>
         </div>
+
+        {/* ===================================================
+            RIGHT — HERO IMAGE
+        =================================================== */}
+
+        <div
+          className="
+            relative
+            w-full
+            md:w-1/2
+            min-h-[52vh]
+            md:min-h-0
+            overflow-hidden
+            bg-stone-100
+          "
+        >
+
+          <img
+            src={heroImage}
+            alt="AVERNUS Men's Fragrance Collection"
+            loading="eager"
+            decoding="async"
+            fetchPriority="high"
+            className="
+              absolute
+              inset-0
+              w-full
+              h-full
+              object-cover
+              object-center
+              select-none
+            "
+            draggable="false"
+          />
+
+        </div>
+
       </section>
 
-      {/* ==========================
+      {/* =====================================================
           PRODUCTS
-      ========================== */}
+      ===================================================== */}
 
-      <section className="px-6 md:px-16 py-20">
+      <section
+        id="men-collection"
+        className="
+          px-5
+          sm:px-7
+          md:px-12
+          lg:px-16
+          py-16
+          md:py-20
+        "
+      >
+
+        {/* COLLECTION HEADING */}
+
+        <div
+          className="
+            max-w-7xl
+            mx-auto
+            mb-14
+            md:mb-20
+            text-center
+          "
+        >
+
+          <p
+            className="
+              uppercase
+              tracking-[0.45em]
+              text-[9px]
+              text-stone-400
+              mb-4
+            "
+          >
+            AVERNUS
+          </p>
+
+          <h2
+            className="
+              font-serif
+              text-3xl
+              sm:text-4xl
+              md:text-5xl
+              font-normal
+              tracking-wide
+            "
+          >
+            Men's Collection
+          </h2>
+
+        </div>
+
+        {/* ===================================================
+            PRODUCTS
+        =================================================== */}
+
         {products.length === 0 ? (
-          <div className="text-center py-20">
-            <h2 className="font-serif text-4xl">
+
+          <div
+            className="
+              text-center
+              py-20
+            "
+          >
+
+            <h2
+              className="
+                font-serif
+                text-3xl
+                md:text-4xl
+                font-normal
+              "
+            >
               No Men's Products Found
             </h2>
 
-            <p className="mt-4 text-gray-500">
+            <p
+              className="
+                mt-4
+                text-xs
+                md:text-sm
+                text-stone-500
+              "
+            >
               Check that your database contains
               category: "Men"
             </p>
+
           </div>
+
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-10 gap-y-20 items-stretch">
-            {products.map((product) => (
-              <ProductCard
-                key={product._id}
-                product={product}
-              />
-            ))}
+
+          <div
+            className="
+              max-w-7xl
+              mx-auto
+              grid
+              grid-cols-1
+              sm:grid-cols-2
+              lg:grid-cols-4
+              gap-x-8
+              md:gap-x-10
+              gap-y-16
+              md:gap-y-20
+              items-stretch
+            "
+          >
+
+            {products.map(
+              (product) => (
+                <ProductCard
+                  key={product._id}
+                  product={product}
+                />
+              )
+            )}
+
           </div>
+
         )}
+
       </section>
 
       <Footer />
@@ -174,4 +386,3 @@ function Men() {
 }
 
 export default Men;
-

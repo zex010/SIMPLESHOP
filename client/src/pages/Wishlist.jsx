@@ -1,6 +1,5 @@
-
 import { useNavigate } from "react-router-dom";
-import { Heart, Trash2, ShoppingBag } from "lucide-react";
+import { Heart, Trash2 } from "lucide-react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { useShop } from "../context/ShopContext";
@@ -18,7 +17,6 @@ function Wishlist() {
 
   // ============================================================
   // IMAGE RESOLVER
-  // Same logic as ProductCard
   // ============================================================
 
   const resolveImage = (src) => {
@@ -32,18 +30,15 @@ function Wishlist() {
       return "/placeholder.png";
     }
 
-    // Cloudflare R2 / complete URL
     if (/^https?:\/\//i.test(cleanSrc)) {
       return cleanSrc;
     }
 
-    // Old Render/backend image path
     return `${API_HOST}${cleanSrc.startsWith("/") ? "" : "/"}${cleanSrc}`;
   };
 
   // ============================================================
   // CATEGORY LABEL
-  // Same as ProductCard
   // ============================================================
 
   const getCategoryLabel = (category) => {
@@ -57,7 +52,6 @@ function Wishlist() {
 
   // ============================================================
   // DISPLAY NAME
-  // Same as ProductCard
   // ============================================================
 
   const getDisplayName = (name) => {
@@ -86,7 +80,6 @@ function Wishlist() {
 
   // ============================================================
   // ADD TO BAG
-  // Same behavior as ProductCard
   // ============================================================
 
   const handleAddToCart = (event, product) => {
@@ -100,7 +93,6 @@ function Wishlist() {
 
   // ============================================================
   // BUY NOW
-  // Same behavior as ProductCard
   // ============================================================
 
   const handleBuyNow = (event, product) => {
@@ -114,63 +106,302 @@ function Wishlist() {
   };
 
   return (
-    <div className="min-h-screen bg-white text-black">
+    <div className="min-h-screen bg-white text-black overflow-x-hidden">
       <Navbar />
 
       {/* ========================================================
           HERO
       ======================================================== */}
-<section className="relative h-[70vh] flex items-center justify-center overflow-hidden">
 
-  {/* WISHLIST HERO IMAGE */}
-  <img
-    src="/wishlist.jpg"
-    alt="Wishlist"
-    className="absolute inset-0 w-full h-full object-cover"
-  />
+      <section
+        className="
+          relative
+          w-full
+          min-h-[calc(100svh-64px)]
+          md:min-h-[calc(100dvh-64px)]
+          bg-white
+          overflow-hidden
+        "
+      >
+        <div
+          className="
+            min-h-[calc(100svh-64px)]
+            md:min-h-[calc(100dvh-64px)]
+            grid
+            grid-cols-1
+            md:grid-cols-2
+          "
+        >
 
-  {/* DARK OVERLAY */}
-  <div className="absolute inset-0 bg-black/40"></div>
+          {/* ====================================================
+              LEFT — TEXT
+          ==================================================== */}
 
-  {/* HERO CONTENT */}
-  <div className="relative z-10 text-center text-white px-6">
+          <div
+            className="
+              relative
+              flex
+              items-center
+              justify-center
+              order-2
+              md:order-1
+              px-6
+              sm:px-10
+              md:px-12
+              lg:px-20
+              py-16
+              md:py-20
+              bg-white
+              overflow-hidden
+            "
+          >
+            <div
+              className="
+                w-full
+                max-w-xl
+                text-center
+                md:text-left
+                min-w-0
+              "
+            >
 
-    <p className="text-xs uppercase tracking-[0.5em] text-white/80 mb-8">
-      AVERNUS
-    </p>
+              <p
+                className="
+                  uppercase
+                  tracking-[0.5em]
+                  text-[9px]
+                  sm:text-[10px]
+                  text-stone-400
+                  mb-5
+                "
+              >
+                THE HOUSE OF AVERNUS
+              </p>
 
-    <h1 className="font-serif text-6xl md:text-8xl tracking-[0.15em]">
-      WISHLIST
-    </h1>
+              <p
+                className="
+                  uppercase
+                  tracking-[0.3em]
+                  text-[9px]
+                  sm:text-[10px]
+                  text-stone-500
+                  mb-4
+                "
+              >
+                YOUR SAVED FRAGRANCES
+              </p>
 
-    <p className="mt-8 text-white/90 tracking-[0.3em] uppercase text-sm">
-      Fragrances You're Considering
-    </p>
+              {/* MAIN TITLE */}
 
-  </div>
-</section>
-      
+              <h1
+                className="
+                  font-serif
+                  font-normal
+                  text-[clamp(2.6rem,7vw,7rem)]
+                  leading-none
+                  tracking-[0.035em]
+                  whitespace-nowrap
+                  max-w-full
+                "
+              >
+                WISHLIST
+              </h1>
+
+              <p
+                className="
+                  mt-7
+                  max-w-md
+                  mx-auto
+                  md:mx-0
+                  text-xs
+                  sm:text-sm
+                  leading-7
+                  text-stone-500
+                "
+              >
+                Keep the fragrances that have caught your attention
+                close at hand, and return whenever you are ready
+                to make them yours.
+              </p>
+
+              <div
+                className="
+                  flex
+                  items-center
+                  justify-center
+                  md:justify-start
+                  gap-4
+                  mt-8
+                "
+              >
+                <span className="w-10 h-px bg-black" />
+
+                <span
+                  className="
+                    uppercase
+                    tracking-[0.35em]
+                    text-[8px]
+                    text-stone-400
+                  "
+                >
+                  AVERNUS
+                </span>
+              </div>
+
+            </div>
+          </div>
+
+          {/* ====================================================
+              RIGHT — HERO IMAGE
+          ==================================================== */}
+
+          <div
+            className="
+              relative
+              order-1
+              md:order-2
+              h-[52vh]
+              sm:h-[58vh]
+              md:h-auto
+              min-h-[420px]
+              md:min-h-full
+              bg-stone-100
+              overflow-hidden
+            "
+          >
+
+            <img
+              src="/wishlist.jpg"
+              alt="AVERNUS Wishlist"
+              loading="eager"
+              decoding="async"
+              fetchPriority="high"
+              className="
+                absolute
+                inset-0
+                w-full
+                h-full
+                object-cover
+                object-center
+                select-none
+              "
+              draggable="false"
+            />
+
+            <div
+              className="
+                absolute
+                inset-0
+                bg-gradient-to-t
+                from-black/10
+                via-transparent
+                to-transparent
+                pointer-events-none
+              "
+            />
+
+            <div
+              className="
+                absolute
+                left-5
+                sm:left-7
+                md:left-8
+                bottom-5
+                sm:bottom-7
+                md:bottom-8
+                text-white
+              "
+            >
+              <p
+                className="
+                  uppercase
+                  tracking-[0.35em]
+                  text-[8px]
+                  sm:text-[9px]
+                "
+              >
+                AVERNUS
+              </p>
+
+              <p
+                className="
+                  mt-2
+                  uppercase
+                  tracking-[0.25em]
+                  text-[8px]
+                  text-white/70
+                "
+              >
+                Your Selection
+              </p>
+            </div>
+
+          </div>
+
+        </div>
+      </section>
 
       {/* ========================================================
-          PRODUCTS
+          WISHLIST PRODUCTS
       ======================================================== */}
 
-      <section className="px-6 md:px-16 py-20">
+      <section
+        className="
+          px-4
+          sm:px-6
+          md:px-12
+          lg:px-16
+          py-14
+          md:py-24
+        "
+      >
+
         {!wishlist || wishlist.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-20 text-center">
+
+          /* ====================================================
+             EMPTY WISHLIST
+          ==================================================== */
+
+          <div
+            className="
+              flex
+              flex-col
+              items-center
+              justify-center
+              py-20
+              text-center
+              px-6
+            "
+          >
+
             <Heart
               size={40}
               strokeWidth={1}
               className="text-stone-300 mb-6"
             />
 
-            <h2 className="font-serif text-4xl">
+            <h2
+              className="
+                font-serif
+                text-3xl
+                sm:text-4xl
+                font-normal
+              "
+            >
               Your Wishlist Is Empty
             </h2>
 
-            <p className="mt-4 text-stone-500 max-w-md">
-              Save the fragrances you love and come back to them whenever
-              you're ready.
+            <p
+              className="
+                mt-4
+                text-sm
+                leading-6
+                text-stone-500
+                max-w-md
+              "
+            >
+              Save the fragrances you love and come back
+              to them whenever you're ready.
             </p>
 
             <button
@@ -180,31 +411,51 @@ function Wishlist() {
                 mt-10
                 bg-black
                 text-white
-                px-10
+                px-8
+                sm:px-10
                 py-4
                 uppercase
-                tracking-[0.35em]
-                text-xs
+                tracking-[0.3em]
+                text-[10px]
                 hover:bg-stone-800
                 transition
               "
             >
               Explore The Collection
             </button>
+
           </div>
+
         ) : (
+
+          /* ====================================================
+             PRODUCTS
+             
+             MOBILE = 2 COLUMNS
+             TABLET = 2 COLUMNS
+             DESKTOP = 4 COLUMNS
+          ==================================================== */
+
           <div
             className="
+              max-w-7xl
+              mx-auto
               grid
-              grid-cols-1
+              grid-cols-2
               sm:grid-cols-2
               lg:grid-cols-4
-              gap-x-10
-              gap-y-20
+              gap-x-4
+              sm:gap-x-6
+              md:gap-x-10
+              gap-y-14
+              sm:gap-y-16
+              md:gap-y-20
               items-stretch
             "
           >
+
             {wishlist.map((product) => {
+
               const imageUrl = resolveImage(product?.image);
               const category = getCategoryLabel(product?.category);
               const displayName = getDisplayName(product?.name);
@@ -216,47 +467,67 @@ function Wishlist() {
                     group
                     flex
                     h-full
-                    min-h-full
+                    min-w-0
                     flex-col
                     bg-white
                     text-black
                     cursor-pointer
+                    overflow-hidden
                   "
                   onClick={() =>
                     navigate(`/product/${product._id}`)
                   }
                 >
+
                   {/* ==================================================
                       PRODUCT IMAGE
                   ================================================== */}
 
-                  <div className="relative aspect-square w-full overflow-hidden bg-[#F8F7F4]">
-                    {/* REMOVE FROM WISHLIST */}
+                  <div
+                    className="
+                      relative
+                      aspect-square
+                      w-full
+                      overflow-hidden
+                      bg-[#F8F7F4]
+                      shrink-0
+                    "
+                  >
+
+                    {/* REMOVE BUTTON */}
 
                     <button
-                      onClick={(e) => handleRemove(e, product._id)}
+                      type="button"
+                      onClick={(e) =>
+                        handleRemove(e, product._id)
+                      }
                       aria-label="Remove from wishlist"
                       className="
-    absolute
-    top-4
-    right-4
-    z-20
-    flex
-    items-center
-    justify-center
-    bg-transparent
-    text-black
-    transition-all
-    duration-300
-    hover:scale-110
-    hover:text-red-600
-  "
+                        absolute
+                        top-2
+                        right-2
+                        sm:top-4
+                        sm:right-4
+                        z-20
+                        flex
+                        items-center
+                        justify-center
+                        bg-transparent
+                        text-black
+                        transition-all
+                        duration-300
+                        hover:scale-110
+                        hover:text-red-600
+                      "
                     >
                       <Trash2
-                        size={19}
+                        size={16}
                         strokeWidth={1.4}
+                        className="sm:w-[19px] sm:h-[19px]"
                       />
                     </button>
+
+                    {/* PRODUCT IMAGE */}
 
                     <img
                       src={imageUrl}
@@ -285,6 +556,7 @@ function Wishlist() {
                         }
                       }}
                     />
+
                   </div>
 
                   {/* ==================================================
@@ -295,28 +567,47 @@ function Wishlist() {
                     className="
                       flex
                       flex-1
+                      min-w-0
                       flex-col
-                      pt-6
+                      pt-4
+                      sm:pt-6
                     "
                   >
-                    {/* NEW ARRIVAL */}
+
+                    {/* ==================================================
+                        NEW ARRIVAL
+
+                        FIX:
+                        Always reserves the same height.
+                        It stays immediately below the image.
+                    ================================================== */}
 
                     <div
                       className="
                         flex
-                        h-[20px]
+                        h-[18px]
+                        sm:h-[20px]
+                        w-full
                         shrink-0
                         items-start
                         justify-center
+                        overflow-hidden
                       "
                     >
                       {product?.isNew && (
                         <span
                           className="
-                            text-[9px]
+                            block
+                            max-w-full
+                            truncate
+                            whitespace-nowrap
+                            text-center
+                            text-[7px]
+                            sm:text-[9px]
                             font-medium
                             uppercase
-                            tracking-[0.3em]
+                            tracking-[0.18em]
+                            sm:tracking-[0.3em]
                             text-stone-400
                           "
                         >
@@ -325,69 +616,108 @@ function Wishlist() {
                       )}
                     </div>
 
-                    {/* BRAND + CATEGORY */}
+                    {/* ==================================================
+                        BRAND + CATEGORY
+                    ================================================== */}
 
                     <div
                       className="
-                        mt-3
+                        mt-2
+                        sm:mt-3
                         flex
                         h-[18px]
+                        w-full
                         shrink-0
                         items-center
                         justify-center
-                        gap-2
+                        gap-1
+                        sm:gap-2
                         text-center
+                        overflow-hidden
+                        px-1
                       "
                     >
+
                       <span
                         className="
-                          text-[10px]
+                          min-w-0
+                          max-w-[48%]
+                          truncate
+                          whitespace-nowrap
+                          text-[7px]
+                          sm:text-[10px]
                           font-medium
                           uppercase
-                          tracking-[0.25em]
+                          tracking-[0.12em]
+                          sm:tracking-[0.2em]
                           text-stone-500
                         "
                       >
                         {product?.brand || "AVERNUS"}
                       </span>
 
-                      <span className="text-[10px] text-stone-300">
+                      <span
+                        className="
+                          shrink-0
+                          text-[8px]
+                          sm:text-[10px]
+                          text-stone-300
+                        "
+                      >
                         |
                       </span>
 
                       <span
                         className="
-                          text-[10px]
+                          min-w-0
+                          max-w-[48%]
+                          truncate
+                          whitespace-nowrap
+                          text-[7px]
+                          sm:text-[10px]
                           font-medium
                           uppercase
-                          tracking-[0.25em]
+                          tracking-[0.12em]
+                          sm:tracking-[0.2em]
                           text-stone-400
                         "
                       >
                         {category}
                       </span>
+
                     </div>
 
-                    {/* PRODUCT NAME */}
+                    {/* ==================================================
+                        PRODUCT NAME
+                    ================================================== */}
 
                     <div
                       className="
-                        mt-3
+                        mt-2
+                        sm:mt-3
                         flex
-                        h-[68px]
+                        h-[54px]
+                        sm:h-[68px]
+                        w-full
                         shrink-0
                         items-start
                         justify-center
-                        px-3
+                        px-1
+                        sm:px-3
+                        overflow-hidden
                       "
                     >
                       <h2
                         className="
                           line-clamp-2
+                          w-full
                           max-w-full
+                          overflow-hidden
                           text-center
                           font-serif
-                          text-[28px]
+                          text-[16px]
+                          sm:text-[22px]
+                          md:text-[28px]
                           font-normal
                           leading-[1.1]
                           tracking-[-0.01em]
@@ -395,6 +725,7 @@ function Wishlist() {
                           transition-colors
                           duration-300
                           group-hover:text-stone-600
+                          break-words
                         "
                       >
                         {displayName}
@@ -403,16 +734,20 @@ function Wishlist() {
 
                     {/* FLEXIBLE SPACE */}
 
-                    <div className="flex-1 min-h-0" />
+                    <div className="flex-1 min-h-2" />
 
-                    {/* PRICE */}
+                    {/* ==================================================
+                        PRICE
+                    ================================================== */}
 
                     <div
                       className="
                         mt-auto
-                        -translate-y-2
+                        -translate-y-1
+                        sm:-translate-y-2
                         flex
-                        h-[28px]
+                        h-[24px]
+                        sm:h-[28px]
                         shrink-0
                         items-center
                         justify-center
@@ -420,10 +755,13 @@ function Wishlist() {
                     >
                       <span
                         className="
-                          text-[13px]
+                          text-[10px]
+                          sm:text-[13px]
                           font-normal
-                          tracking-[0.18em]
+                          tracking-[0.12em]
+                          sm:tracking-[0.18em]
                           text-stone-600
+                          whitespace-nowrap
                         "
                       >
                         ${product?.price ?? "0"}
@@ -432,19 +770,25 @@ function Wishlist() {
 
                     {/* ==================================================
                         ACTION BUTTONS
-                        EXACT SAME STRUCTURE AS ProductCard
+
+                        MOBILE:
+                        Both buttons remain on one row.
                     ================================================== */}
 
                     <div
                       className="
-                        mt-3
+                        mt-2
+                        sm:mt-3
                         flex
-                        h-[48px]
+                        h-[42px]
+                        sm:h-[48px]
                         w-full
                         shrink-0
-                        gap-2
+                        gap-1
+                        sm:gap-2
                       "
                     >
+
                       {/* ADD TO BAG */}
 
                       <button
@@ -458,21 +802,26 @@ function Wishlist() {
                         className="
                           flex
                           h-full
+                          min-w-0
                           flex-1
                           items-center
                           justify-center
                           border
                           border-black
                           bg-black
-                          px-3
-                          text-[10px]
+                          px-1
+                          sm:px-3
+                          text-[7px]
+                          sm:text-[10px]
                           font-medium
                           uppercase
-                          tracking-[0.2em]
+                          tracking-[0.08em]
+                          sm:tracking-[0.2em]
                           text-white
                           transition-all
                           duration-300
                           hover:bg-stone-800
+                          whitespace-nowrap
                         "
                       >
                         ADD TO BAG
@@ -491,33 +840,44 @@ function Wishlist() {
                         className="
                           flex
                           h-full
+                          min-w-0
                           flex-1
                           items-center
                           justify-center
                           border
                           border-stone-300
                           bg-white
-                          px-3
-                          text-[10px]
+                          px-1
+                          sm:px-3
+                          text-[7px]
+                          sm:text-[10px]
                           font-medium
                           uppercase
-                          tracking-[0.2em]
+                          tracking-[0.08em]
+                          sm:tracking-[0.2em]
                           text-stone-800
                           transition-all
                           duration-300
                           hover:border-black
                           hover:bg-stone-50
+                          whitespace-nowrap
                         "
                       >
                         BUY NOW
                       </button>
+
                     </div>
+
                   </div>
+
                 </article>
               );
             })}
+
           </div>
+
         )}
+
       </section>
 
       <Footer />
@@ -526,4 +886,3 @@ function Wishlist() {
 }
 
 export default Wishlist;
-

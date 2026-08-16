@@ -1,4 +1,3 @@
-
 import { Link, useNavigate } from "react-router-dom";
 import { Heart } from "lucide-react";
 import { useShop } from "../context/ShopContext";
@@ -132,43 +131,54 @@ function ProductCard({ product }) {
         to={`/product/${product._id}`}
         className="block shrink-0"
       >
-        <div className="relative aspect-square w-full overflow-hidden bg-[#F8F7F4]">
-
+        <div
+          className="
+            relative
+            aspect-square
+            w-full
+            overflow-hidden
+            bg-[#F8F7F4]
+          "
+        >
           {/* ====================================================
               WISHLIST HEART
-              Small + minimal so it does not change the layout.
           ==================================================== */}
           <button
-  type="button"
-  onClick={handleWishlist}
-  aria-label={
-    isWishlisted
-      ? "Remove from wishlist"
-      : "Add to wishlist"
-  }
-  className="
-    absolute
-    right-4
-    top-4
-    z-20
-    flex
-    h-10
-    w-10
-    items-center
-    justify-center
-    bg-transparent
-    text-black
-    transition-all
-    duration-300
-    hover:scale-110
-  "
->
-  <Heart
-    size={20}
-    strokeWidth={1.5}
-    fill={isWishlisted ? "currentColor" : "none"}
-  />
-</button>
+            type="button"
+            onClick={handleWishlist}
+            aria-label={
+              isWishlisted
+                ? "Remove from wishlist"
+                : "Add to wishlist"
+            }
+            className="
+              absolute
+              right-1.5
+              top-1.5
+              sm:right-4
+              sm:top-4
+              z-20
+              flex
+              h-7
+              w-7
+              sm:h-10
+              sm:w-10
+              items-center
+              justify-center
+              bg-transparent
+              text-black
+              transition-all
+              duration-300
+              hover:scale-110
+            "
+          >
+            <Heart
+              size={15}
+              strokeWidth={1.5}
+              className="sm:w-5 sm:h-5"
+              fill={isWishlisted ? "currentColor" : "none"}
+            />
+          </button>
 
           <img
             src={imageUrl}
@@ -205,7 +215,8 @@ function ProductCard({ product }) {
           flex
           flex-1
           flex-col
-          pt-6
+          pt-3
+          sm:pt-6
         "
       >
         {/* ======================================================
@@ -214,7 +225,8 @@ function ProductCard({ product }) {
         <div
           className="
             flex
-            h-[20px]
+            h-[14px]
+            sm:h-[20px]
             shrink-0
             items-start
             justify-center
@@ -223,10 +235,12 @@ function ProductCard({ product }) {
           {product?.isNew && (
             <span
               className="
-                text-[9px]
+                text-[6px]
+                sm:text-[9px]
                 font-medium
                 uppercase
-                tracking-[0.3em]
+                tracking-[0.15em]
+                sm:tracking-[0.3em]
                 text-stone-400
               "
             >
@@ -240,38 +254,47 @@ function ProductCard({ product }) {
         ====================================================== */}
         <div
           className="
-            mt-3
+            mt-1.5
+            sm:mt-3
             flex
-            h-[18px]
+            h-[15px]
+            sm:h-[18px]
             shrink-0
             items-center
             justify-center
-            gap-2
+            gap-1
+            sm:gap-2
             text-center
           "
         >
           <span
             className="
-              text-[10px]
+              max-w-[45%]
+              truncate
+              text-[6px]
+              sm:text-[10px]
               font-medium
               uppercase
-              tracking-[0.25em]
+              tracking-[0.08em]
+              sm:tracking-[0.25em]
               text-stone-500
             "
           >
             {product?.brand || "AVERNUS"}
           </span>
 
-          <span className="text-[10px] text-stone-300">
+          <span className="text-[7px] sm:text-[10px] text-stone-300">
             |
           </span>
 
           <span
             className="
-              text-[10px]
+              text-[6px]
+              sm:text-[10px]
               font-medium
               uppercase
-              tracking-[0.25em]
+              tracking-[0.08em]
+              sm:tracking-[0.25em]
               text-stone-400
             "
           >
@@ -284,13 +307,16 @@ function ProductCard({ product }) {
         ====================================================== */}
         <div
           className="
-            mt-3
+            mt-1.5
+            sm:mt-3
             flex
-            h-[68px]
+            h-[42px]
+            sm:h-[68px]
             shrink-0
             items-start
             justify-center
-            px-3
+            px-1
+            sm:px-3
           "
         >
           <h2
@@ -299,7 +325,8 @@ function ProductCard({ product }) {
               max-w-full
               text-center
               font-serif
-              text-[28px]
+              text-[15px]
+              sm:text-[28px]
               font-normal
               leading-[1.1]
               tracking-[-0.01em]
@@ -324,9 +351,11 @@ function ProductCard({ product }) {
         <div
           className="
             mt-auto
-            -translate-y-2
+            -translate-y-1
+            sm:-translate-y-2
             flex
-            h-[28px]
+            h-[20px]
+            sm:h-[28px]
             shrink-0
             items-center
             justify-center
@@ -334,9 +363,11 @@ function ProductCard({ product }) {
         >
           <span
             className="
-              text-[13px]
+              text-[9px]
+              sm:text-[13px]
               font-normal
-              tracking-[0.18em]
+              tracking-[0.08em]
+              sm:tracking-[0.18em]
               text-stone-600
             "
           >
@@ -349,12 +380,15 @@ function ProductCard({ product }) {
         ====================================================== */}
         <div
           className="
-            mt-3
+            mt-2
+            sm:mt-3
             flex
-            h-[48px]
+            h-[34px]
+            sm:h-[48px]
             w-full
             shrink-0
-            gap-2
+            gap-1
+            sm:gap-2
           "
         >
           {/* ADD TO BAG */}
@@ -370,11 +404,14 @@ function ProductCard({ product }) {
               border
               border-black
               bg-black
-              px-3
-              text-[10px]
+              px-1
+              sm:px-3
+              text-[6px]
+              sm:text-[10px]
               font-medium
               uppercase
-              tracking-[0.2em]
+              tracking-[0.04em]
+              sm:tracking-[0.2em]
               text-white
               transition-all
               duration-300
@@ -397,11 +434,14 @@ function ProductCard({ product }) {
               border
               border-stone-300
               bg-white
-              px-3
-              text-[10px]
+              px-1
+              sm:px-3
+              text-[6px]
+              sm:text-[10px]
               font-medium
               uppercase
-              tracking-[0.2em]
+              tracking-[0.04em]
+              sm:tracking-[0.2em]
               text-stone-800
               transition-all
               duration-300
@@ -418,4 +458,3 @@ function ProductCard({ product }) {
 }
 
 export default ProductCard;
-
