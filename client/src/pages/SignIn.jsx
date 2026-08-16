@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -24,6 +25,10 @@ const api = axios.create({
     "Content-Type": "application/json",
   },
 });
+
+// ============================================================
+// COMPONENT
+// ============================================================
 
 export default function SignIn() {
   const navigate = useNavigate();
@@ -382,7 +387,7 @@ export default function SignIn() {
   };
 
   // ============================================================
-  // UI
+  // RETURN
   // ============================================================
 
   return (
@@ -395,7 +400,7 @@ export default function SignIn() {
       {toast.show && (
         <div
           role="alert"
-          className={`fixed top-5 right-5 z-[100] flex items-center gap-2.5 px-4 py-3 border shadow-sm ${
+          className={`fixed top-5 right-5 z-[300] flex items-center gap-2.5 px-4 py-3 border shadow-sm ${
             toast.type === "success"
               ? "bg-stone-950 text-white border-stone-800"
               : "bg-red-50 text-red-900 border-red-200"
@@ -414,19 +419,13 @@ export default function SignIn() {
       )}
 
       {/* ======================================================
-          DESKTOP SLIDING AUTH CONTAINER
-
-          Sign In:
-          IMAGE LEFT  | FORM RIGHT
-
-          Sign Up:
-          FORM LEFT   | IMAGE RIGHT
+          DESKTOP LAYOUT
       ====================================================== */}
 
       <div className="relative min-h-screen w-full">
 
         {/* ====================================================
-            IMAGE PANEL
+            DESKTOP IMAGE PANEL
         ==================================================== */}
 
         <div
@@ -455,7 +454,6 @@ export default function SignIn() {
             }
           `}
         >
-
           <img
             src={perfumesImage}
             alt="AVERNUS Perfume Bottle"
@@ -475,13 +473,7 @@ export default function SignIn() {
 
           <div className="absolute inset-0 bg-gradient-to-b from-stone-950/80 via-stone-950/30 to-stone-950/70" />
 
-          {/* TOP LABEL */}
-
-          <div className="relative z-10 w-full text-center pt-2 md:pt-5">
-            
-          </div>
-
-          {/* CENTER BRAND */}
+          <div className="relative z-10 w-full text-center pt-2 md:pt-5" />
 
           <div className="relative z-10 text-center max-w-lg mx-auto flex flex-col items-center my-auto transform -translate-y-8 md:-translate-y-14">
 
@@ -497,19 +489,15 @@ export default function SignIn() {
             <p className="text-[11px] md:text-xs tracking-[0.22em] text-stone-200 font-light italic drop-shadow-sm">
               "Crafted for timeless elegance."
             </p>
-
           </div>
-
-          {/* FOOTER LABEL */}
 
           <div className="relative z-10 w-full text-center md:text-left text-[8px] uppercase tracking-[0.25em] text-stone-400 font-mono">
             Est. Paris &bull; London &bull; New York
           </div>
-
         </div>
 
         {/* ====================================================
-            AUTH PANEL
+            DESKTOP AUTH PANEL
         ==================================================== */}
 
         <div
@@ -536,10 +524,7 @@ export default function SignIn() {
             }
           `}
         >
-
           <div className="w-full max-w-sm mx-auto space-y-6">
-
-            {/* BACK */}
 
             <button
               type="button"
@@ -551,11 +536,9 @@ export default function SignIn() {
               <ArrowLeft className="w-3.5 h-3.5" />
             </button>
 
-            {/* AUTH */}
-
             <div>
 
-              {/* TABS */}
+              {/* DESKTOP TABS */}
 
               <div className="flex border-b border-stone-200">
 
@@ -593,8 +576,6 @@ export default function SignIn() {
 
               </div>
 
-              {/* SERVER ERROR */}
-
               {serverError && (
                 <div className="mt-4 p-3 bg-stone-50 border border-stone-300 flex items-start gap-2.5">
 
@@ -608,7 +589,7 @@ export default function SignIn() {
               )}
 
               {/* ==================================================
-                  SIGN IN
+                  DESKTOP SIGN IN
               ================================================== */}
 
               {activeTab === "signin" && (
@@ -617,8 +598,6 @@ export default function SignIn() {
                   className="space-y-4.5 mt-5"
                   noValidate
                 >
-
-                  {/* EMAIL */}
 
                   <div className="space-y-1.5">
 
@@ -650,8 +629,6 @@ export default function SignIn() {
                     )}
 
                   </div>
-
-                  {/* PASSWORD */}
 
                   <div className="space-y-1.5">
 
@@ -722,8 +699,6 @@ export default function SignIn() {
 
                   </div>
 
-                  {/* REMEMBER */}
-
                   <div className="flex items-center space-x-2.5 pt-1">
 
                     <input
@@ -744,8 +719,6 @@ export default function SignIn() {
 
                   </div>
 
-                  {/* BUTTON */}
-
                   <button
                     type="submit"
                     disabled={isLoading}
@@ -761,8 +734,6 @@ export default function SignIn() {
                     )}
                   </button>
 
-                  {/* OR */}
-
                   <div className="relative my-5 text-center">
 
                     <div className="absolute inset-0 flex items-center">
@@ -775,8 +746,6 @@ export default function SignIn() {
 
                   </div>
 
-                  {/* GOOGLE */}
-
                   <button
                     type="button"
                     disabled
@@ -784,8 +753,6 @@ export default function SignIn() {
                   >
                     Google Sign-In coming soon
                   </button>
-
-                  {/* CREATE ACCOUNT */}
 
                   <div className="text-center pt-2">
 
@@ -809,7 +776,7 @@ export default function SignIn() {
               )}
 
               {/* ==================================================
-                  SIGN UP
+                  DESKTOP SIGN UP
               ================================================== */}
 
               {activeTab === "signup" && (
@@ -818,8 +785,6 @@ export default function SignIn() {
                   className="space-y-3.5 mt-5"
                   noValidate
                 >
-
-                  {/* NAME */}
 
                   <div className="grid grid-cols-2 gap-3">
 
@@ -887,8 +852,6 @@ export default function SignIn() {
 
                   </div>
 
-                  {/* EMAIL */}
-
                   <div className="space-y-1.5">
 
                     <label
@@ -919,8 +882,6 @@ export default function SignIn() {
                     )}
 
                   </div>
-
-                  {/* PHONE */}
 
                   <div className="space-y-1.5">
 
@@ -953,8 +914,6 @@ export default function SignIn() {
 
                   </div>
 
-                  {/* ADDRESS */}
-
                   <div className="space-y-1.5">
 
                     <label
@@ -985,8 +944,6 @@ export default function SignIn() {
                     )}
 
                   </div>
-
-                  {/* PASSWORD */}
 
                   <div className="space-y-1.5">
 
@@ -1042,8 +999,6 @@ export default function SignIn() {
                     )}
 
                   </div>
-
-                  {/* CONFIRM PASSWORD */}
 
                   <div className="space-y-1.5">
 
@@ -1102,8 +1057,6 @@ export default function SignIn() {
 
                   </div>
 
-                  {/* CREATE ACCOUNT */}
-
                   <button
                     type="submit"
                     disabled={isLoading}
@@ -1122,8 +1075,6 @@ export default function SignIn() {
                       </span>
                     )}
                   </button>
-
-                  {/* SIGN IN LINK */}
 
                   <div className="text-center pt-2">
 
@@ -1147,26 +1098,58 @@ export default function SignIn() {
               )}
 
             </div>
-
           </div>
-
         </div>
 
         {/* ====================================================
-            MOBILE LAYOUT
-            No horizontal sliding on small screens.
+            MOBILE ANIMATED LAYOUT
         ==================================================== */}
 
-        <div className="md:hidden min-h-screen w-full flex flex-col">
+        <div className="md:hidden relative min-h-screen w-full overflow-hidden bg-white">
 
-          {/* MOBILE IMAGE */}
+          {/* ==================================================
+              MOBILE IMAGE
+              
+              SIGN IN  -> TOP
+              SIGN UP  -> SLIDES DOWN
+          ================================================== */}
 
-          <div className="relative w-full h-[320px] bg-stone-950 overflow-hidden">
+          <div
+            className={`
+              absolute
+              left-0
+              top-0
+              z-20
+              w-full
+              h-[320px]
+              bg-stone-950
+              overflow-hidden
+              transition-transform
+              duration-700
+              ease-[cubic-bezier(0.77,0,0.175,1)]
+              ${
+                activeTab === "signup"
+                  ? "translate-y-[calc(100vh-320px)]"
+                  : "translate-y-0"
+              }
+            `}
+          >
 
             <img
               src={perfumesImage}
               alt="AVERNUS Perfume Bottle"
-              className="absolute inset-0 w-full h-full object-cover object-bottom scale-105"
+              className="
+                absolute
+                inset-0
+                w-full
+                h-full
+                object-cover
+                object-bottom
+                scale-105
+                transition-transform
+                duration-1000
+                ease-out
+              "
             />
 
             <div className="absolute inset-0 bg-gradient-to-b from-stone-950/80 via-stone-950/30 to-stone-950/70" />
@@ -1199,22 +1182,62 @@ export default function SignIn() {
               </div>
 
             </div>
-
           </div>
 
-          {/* MOBILE FORM */}
+          {/* ==================================================
+              MOBILE FORM AREA
 
-          <div className="w-full flex-1 flex items-center justify-center px-5 py-8 bg-white">
+              SIGN IN -> STARTS BELOW IMAGE
+              SIGN UP -> SLIDES INTO FULL SCREEN
+          ================================================== */}
 
-            <div className="w-full max-w-sm mx-auto">
+          <div
+            className={`
+              absolute
+              inset-0
+              z-10
+              w-full
+              bg-white
+              overflow-y-auto
+              transition-transform
+              duration-700
+              ease-[cubic-bezier(0.77,0,0.175,1)]
+              ${
+                activeTab === "signup"
+                  ? "translate-y-0"
+                  : "translate-y-[320px]"
+              }
+            `}
+          >
+
+            <div
+              className={`
+                w-full
+                max-w-sm
+                mx-auto
+                px-5
+                ${
+                  activeTab === "signup"
+                    ? "pt-8 pb-10"
+                    : "pt-8 pb-10"
+                }
+              `}
+            >
+
+              {/* BACK */}
 
               <button
                 type="button"
                 onClick={handleBack}
+                aria-label="Go back"
                 className="inline-flex items-center justify-center text-stone-500 hover:text-black transition-colors p-1 mb-6"
               >
                 <ArrowLeft className="w-3.5 h-3.5" />
               </button>
+
+              {/* ==================================================
+                  MOBILE TABS
+              ================================================== */}
 
               <div className="flex border-b border-stone-200">
 
@@ -1224,7 +1247,7 @@ export default function SignIn() {
                   className={`flex-1 pb-3 text-[10px] tracking-[0.16em] uppercase transition-colors relative font-medium ${
                     activeTab === "signin"
                       ? "text-black font-semibold"
-                      : "text-stone-400"
+                      : "text-stone-400 hover:text-stone-600"
                   }`}
                 >
                   Sign In
@@ -1240,7 +1263,7 @@ export default function SignIn() {
                   className={`flex-1 pb-3 text-[10px] tracking-[0.16em] uppercase transition-colors relative font-medium ${
                     activeTab === "signup"
                       ? "text-black font-semibold"
-                      : "text-stone-400"
+                      : "text-stone-400 hover:text-stone-600"
                   }`}
                 >
                   Create Account
@@ -1251,6 +1274,8 @@ export default function SignIn() {
                 </button>
 
               </div>
+
+              {/* SERVER ERROR */}
 
               {serverError && (
                 <div className="mt-4 p-3 bg-stone-50 border border-stone-300 flex items-start gap-2.5">
@@ -1264,7 +1289,9 @@ export default function SignIn() {
                 </div>
               )}
 
-              {/* MOBILE SIGN IN */}
+              {/* ==================================================
+                  MOBILE SIGN IN FORM
+              ================================================== */}
 
               {activeTab === "signin" && (
                 <form
@@ -1273,13 +1300,19 @@ export default function SignIn() {
                   noValidate
                 >
 
+                  {/* EMAIL */}
+
                   <div className="space-y-1.5">
 
-                    <label className="block text-[10px] uppercase tracking-[0.13em] text-stone-600 font-medium">
+                    <label
+                      htmlFor="mobile-signin-email"
+                      className="block text-[10px] uppercase tracking-[0.13em] text-stone-600 font-medium"
+                    >
                       Email Address
                     </label>
 
                     <input
+                      id="mobile-signin-email"
                       type="email"
                       name="email"
                       value={formData.email}
@@ -1289,22 +1322,27 @@ export default function SignIn() {
                         errors.email
                           ? "border-red-500"
                           : "border-stone-300 focus:border-black"
-                      } outline-none`}
+                      } outline-none transition-colors placeholder:text-[10px] placeholder:text-stone-300`}
                     />
 
                     {errors.email && (
-                      <p className="text-[10px] text-red-600">
+                      <p className="text-[10px] text-red-600 tracking-wide">
                         {errors.email}
                       </p>
                     )}
 
                   </div>
 
+                  {/* PASSWORD */}
+
                   <div className="space-y-1.5">
 
-                    <div className="flex justify-between">
+                    <div className="flex justify-between items-center">
 
-                      <label className="text-[10px] uppercase tracking-[0.13em] text-stone-600 font-medium">
+                      <label
+                        htmlFor="mobile-signin-password"
+                        className="text-[10px] uppercase tracking-[0.13em] text-stone-600 font-medium"
+                      >
                         Password
                       </label>
 
@@ -1323,6 +1361,7 @@ export default function SignIn() {
                     <div className="relative">
 
                       <input
+                        id="mobile-signin-password"
                         type={
                           showPassword
                             ? "text"
@@ -1336,7 +1375,7 @@ export default function SignIn() {
                           errors.password
                             ? "border-red-500"
                             : "border-stone-300 focus:border-black"
-                        } outline-none`}
+                        } outline-none transition-colors`}
                       />
 
                       <button
@@ -1365,6 +1404,8 @@ export default function SignIn() {
 
                   </div>
 
+                  {/* REMEMBER */}
+
                   <div className="flex items-center space-x-2.5">
 
                     <input
@@ -1381,15 +1422,34 @@ export default function SignIn() {
 
                   </div>
 
+                  {/* BUTTON */}
+
                   <button
                     type="submit"
                     disabled={isLoading}
-                    className="w-full py-3 bg-black text-white text-[10px] uppercase tracking-[0.22em]"
+                    className="w-full py-3 bg-black text-white text-[10px] uppercase tracking-[0.22em] disabled:opacity-50 flex items-center justify-center gap-2"
                   >
-                    {isLoading
-                      ? "Signing In..."
-                      : "Sign In"}
+                    {isLoading ? (
+                      <>
+                        <RefreshCw className="w-3 h-3 animate-spin" />
+                        Signing In...
+                      </>
+                    ) : (
+                      "Sign In"
+                    )}
                   </button>
+
+                  {/* GOOGLE */}
+
+                  <button
+                    type="button"
+                    disabled
+                    className="w-full py-3 mt-2 bg-stone-100 text-stone-400 text-[9px] uppercase tracking-[0.16em] border border-stone-200 cursor-not-allowed"
+                  >
+                    Google Sign-In coming soon
+                  </button>
+
+                  {/* SWITCH */}
 
                   <div className="text-center pt-2">
 
@@ -1412,7 +1472,9 @@ export default function SignIn() {
                 </form>
               )}
 
-              {/* MOBILE SIGN UP */}
+              {/* ==================================================
+                  MOBILE SIGN UP FORM
+              ================================================== */}
 
               {activeTab === "signup" && (
                 <form
@@ -1421,104 +1483,188 @@ export default function SignIn() {
                   noValidate
                 >
 
+                  {/* NAME */}
+
                   <div className="grid grid-cols-2 gap-3">
 
                     <div className="space-y-1.5">
 
-                      <label className="block text-[10px] uppercase tracking-[0.13em] text-stone-600">
+                      <label
+                        htmlFor="mobile-signup-firstname"
+                        className="block text-[10px] uppercase tracking-[0.13em] text-stone-600"
+                      >
                         First Name
                       </label>
 
                       <input
+                        id="mobile-signup-firstname"
                         type="text"
                         name="firstName"
                         value={formData.firstName}
                         onChange={handleInputChange}
                         placeholder="Henri"
-                        className="w-full px-0 py-2.5 text-xs bg-transparent border-b border-stone-300 focus:border-black outline-none"
+                        className={`w-full px-0 py-2.5 text-xs bg-transparent border-b ${
+                          errors.firstName
+                            ? "border-red-500"
+                            : "border-stone-300 focus:border-black"
+                        } outline-none`}
                       />
+
+                      {errors.firstName && (
+                        <p className="text-[9px] text-red-600">
+                          {errors.firstName}
+                        </p>
+                      )}
 
                     </div>
 
                     <div className="space-y-1.5">
 
-                      <label className="block text-[10px] uppercase tracking-[0.13em] text-stone-600">
+                      <label
+                        htmlFor="mobile-signup-lastname"
+                        className="block text-[10px] uppercase tracking-[0.13em] text-stone-600"
+                      >
                         Last Name
                       </label>
 
                       <input
+                        id="mobile-signup-lastname"
                         type="text"
                         name="lastName"
                         value={formData.lastName}
                         onChange={handleInputChange}
                         placeholder="D'Orsay"
-                        className="w-full px-0 py-2.5 text-xs bg-transparent border-b border-stone-300 focus:border-black outline-none"
+                        className={`w-full px-0 py-2.5 text-xs bg-transparent border-b ${
+                          errors.lastName
+                            ? "border-red-500"
+                            : "border-stone-300 focus:border-black"
+                        } outline-none`}
                       />
+
+                      {errors.lastName && (
+                        <p className="text-[9px] text-red-600">
+                          {errors.lastName}
+                        </p>
+                      )}
 
                     </div>
 
                   </div>
 
+                  {/* EMAIL */}
+
                   <div className="space-y-1.5">
 
-                    <label className="block text-[10px] uppercase tracking-[0.13em] text-stone-600">
+                    <label
+                      htmlFor="mobile-signup-email"
+                      className="block text-[10px] uppercase tracking-[0.13em] text-stone-600"
+                    >
                       Email Address
                     </label>
 
                     <input
+                      id="mobile-signup-email"
                       type="email"
                       name="email"
                       value={formData.email}
                       onChange={handleInputChange}
                       placeholder="client@avernus.com"
-                      className="w-full px-0 py-2.5 text-xs bg-transparent border-b border-stone-300 focus:border-black outline-none"
+                      className={`w-full px-0 py-2.5 text-xs bg-transparent border-b ${
+                        errors.email
+                          ? "border-red-500"
+                          : "border-stone-300 focus:border-black"
+                      } outline-none`}
                     />
+
+                    {errors.email && (
+                      <p className="text-[9px] text-red-600">
+                        {errors.email}
+                      </p>
+                    )}
 
                   </div>
 
+                  {/* PHONE */}
+
                   <div className="space-y-1.5">
 
-                    <label className="block text-[10px] uppercase tracking-[0.13em] text-stone-600">
+                    <label
+                      htmlFor="mobile-signup-phone"
+                      className="block text-[10px] uppercase tracking-[0.13em] text-stone-600"
+                    >
                       Phone Number
                     </label>
 
                     <input
+                      id="mobile-signup-phone"
                       type="tel"
                       name="phoneNumber"
                       value={formData.phoneNumber}
                       onChange={handleInputChange}
                       placeholder="+1 555 019 2834"
-                      className="w-full px-0 py-2.5 text-xs bg-transparent border-b border-stone-300 focus:border-black outline-none"
+                      className={`w-full px-0 py-2.5 text-xs bg-transparent border-b ${
+                        errors.phoneNumber
+                          ? "border-red-500"
+                          : "border-stone-300 focus:border-black"
+                      } outline-none`}
                     />
+
+                    {errors.phoneNumber && (
+                      <p className="text-[9px] text-red-600">
+                        {errors.phoneNumber}
+                      </p>
+                    )}
 
                   </div>
 
+                  {/* ADDRESS */}
+
                   <div className="space-y-1.5">
 
-                    <label className="block text-[10px] uppercase tracking-[0.13em] text-stone-600">
+                    <label
+                      htmlFor="mobile-signup-address"
+                      className="block text-[10px] uppercase tracking-[0.13em] text-stone-600"
+                    >
                       Shipping Address
                     </label>
 
                     <input
+                      id="mobile-signup-address"
                       type="text"
                       name="address"
                       value={formData.address}
                       onChange={handleInputChange}
                       placeholder="12 Place Vendôme, Paris"
-                      className="w-full px-0 py-2.5 text-xs bg-transparent border-b border-stone-300 focus:border-black outline-none"
+                      className={`w-full px-0 py-2.5 text-xs bg-transparent border-b ${
+                        errors.address
+                          ? "border-red-500"
+                          : "border-stone-300 focus:border-black"
+                      } outline-none`}
                     />
+
+                    {errors.address && (
+                      <p className="text-[9px] text-red-600">
+                        {errors.address}
+                      </p>
+                    )}
 
                   </div>
 
+                  {/* PASSWORD */}
+
                   <div className="space-y-1.5">
 
-                    <label className="block text-[10px] uppercase tracking-[0.13em] text-stone-600">
+                    <label
+                      htmlFor="mobile-signup-password"
+                      className="block text-[10px] uppercase tracking-[0.13em] text-stone-600"
+                    >
                       Password
                     </label>
 
                     <div className="relative">
 
                       <input
+                        id="mobile-signup-password"
                         type={
                           showPassword
                             ? "text"
@@ -1528,7 +1674,11 @@ export default function SignIn() {
                         value={formData.password}
                         onChange={handleInputChange}
                         placeholder="At least 8 characters"
-                        className="w-full pr-9 py-2.5 text-xs bg-transparent border-b border-stone-300 focus:border-black outline-none"
+                        className={`w-full pr-9 py-2.5 text-xs bg-transparent border-b ${
+                          errors.password
+                            ? "border-red-500"
+                            : "border-stone-300 focus:border-black"
+                        } outline-none`}
                       />
 
                       <button
@@ -1549,17 +1699,29 @@ export default function SignIn() {
 
                     </div>
 
+                    {errors.password && (
+                      <p className="text-[9px] text-red-600">
+                        {errors.password}
+                      </p>
+                    )}
+
                   </div>
+
+                  {/* CONFIRM PASSWORD */}
 
                   <div className="space-y-1.5">
 
-                    <label className="block text-[10px] uppercase tracking-[0.13em] text-stone-600">
+                    <label
+                      htmlFor="mobile-signup-confirm"
+                      className="block text-[10px] uppercase tracking-[0.13em] text-stone-600"
+                    >
                       Confirm Password
                     </label>
 
                     <div className="relative">
 
                       <input
+                        id="mobile-signup-confirm"
                         type={
                           showConfirmPassword
                             ? "text"
@@ -1571,7 +1733,11 @@ export default function SignIn() {
                         }
                         onChange={handleInputChange}
                         placeholder="Re-enter password"
-                        className="w-full pr-9 py-2.5 text-xs bg-transparent border-b border-stone-300 focus:border-black outline-none"
+                        className={`w-full pr-9 py-2.5 text-xs bg-transparent border-b ${
+                          errors.confirmPassword
+                            ? "border-red-500"
+                            : "border-stone-300 focus:border-black"
+                        } outline-none`}
                       />
 
                       <button
@@ -1592,19 +1758,34 @@ export default function SignIn() {
 
                     </div>
 
+                    {errors.confirmPassword && (
+                      <p className="text-[9px] text-red-600">
+                        {errors.confirmPassword}
+                      </p>
+                    )}
+
                   </div>
+
+                  {/* CREATE ACCOUNT */}
 
                   <button
                     type="submit"
                     disabled={isLoading}
-                    className="w-full py-3 bg-black text-white text-[10px] uppercase tracking-[0.22em]"
+                    className="w-full py-3 bg-black text-white text-[10px] uppercase tracking-[0.22em] disabled:opacity-50 flex items-center justify-center gap-2 mt-4"
                   >
-                    {isLoading
-                      ? "Creating Account..."
-                      : "Create Account"}
+                    {isLoading ? (
+                      <>
+                        <RefreshCw className="w-3 h-3 animate-spin" />
+                        Creating Account...
+                      </>
+                    ) : (
+                      "Create Account"
+                    )}
                   </button>
 
-                  <div className="text-center pt-2">
+                  {/* SWITCH */}
+
+                  <div className="text-center pt-2 pb-4">
 
                     <p className="text-[10px] text-stone-500">
 
@@ -1626,11 +1807,8 @@ export default function SignIn() {
               )}
 
             </div>
-
           </div>
-
         </div>
-
       </div>
 
       {/* ======================================================
@@ -1638,7 +1816,7 @@ export default function SignIn() {
       ====================================================== */}
 
       {isForgotPasswordOpen && (
-        <div className="fixed inset-0 z-[200] bg-black/50 backdrop-blur-sm flex items-center justify-center px-5">
+        <div className="fixed inset-0 z-[400] bg-black/50 backdrop-blur-sm flex items-center justify-center px-5">
 
           <div className="w-full max-w-sm bg-white p-7 shadow-2xl">
 
@@ -1706,12 +1884,11 @@ export default function SignIn() {
               </div>
 
             </form>
-
           </div>
-
         </div>
       )}
 
     </div>
   );
 }
+

@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
@@ -176,13 +177,7 @@ function Women() {
                   "THE HOUSE OF AVERNUS"}
               </p>
 
-              {/* =================================================
-                  WOMEN TITLE
-
-                  IMPORTANT:
-                  - whitespace-nowrap keeps it on one line
-                  - smaller sizes on small screens
-              ================================================= */}
+              {/* WOMEN TITLE */}
 
               <h1
                 className="
@@ -311,7 +306,7 @@ function Women() {
                   text-white/70
                 "
               >
-                Women's Collection
+                {/* Women's Collection */}
               </p>
             </div>
 
@@ -391,14 +386,18 @@ function Women() {
               md:text-right
             "
           >
-            Explore compositions created around
-            elegance, character and distinctive beauty.
+            {/* Explore compositions created around
+            elegance, character and distinctive beauty. */}
           </p>
 
         </div>
 
         {/* ======================================================
             PRODUCTS
+
+            PHONE  → 2 PRODUCTS PER ROW
+            TABLET → 2 PRODUCTS PER ROW
+            LAPTOP → 4 PRODUCTS PER ROW
         ====================================================== */}
 
         {products.length === 0 ? (
@@ -437,12 +436,14 @@ function Women() {
               max-w-7xl
               mx-auto
               grid
-              grid-cols-1
+              grid-cols-2
               sm:grid-cols-2
               lg:grid-cols-4
-              gap-x-8
+              gap-x-3
+              sm:gap-x-6
               md:gap-x-10
-              gap-y-16
+              gap-y-12
+              sm:gap-y-16
               md:gap-y-20
               items-stretch
             "
@@ -467,3 +468,4 @@ function Women() {
 }
 
 export default Women;
+

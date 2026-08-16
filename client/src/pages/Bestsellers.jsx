@@ -110,7 +110,9 @@ function BestSellers() {
       <Navbar />
 
       {/* ========================================================
-          HERO — 50 / 50 LAYOUT
+          HERO
+          DESKTOP → 50 / 50
+          PHONE → IMAGE FIRST, TEXT SECOND
       ======================================================== */}
 
       <section
@@ -134,6 +136,8 @@ function BestSellers() {
         >
           {/* ====================================================
               LEFT — TEXT
+              PHONE → BELOW IMAGE
+              DESKTOP → LEFT
           ==================================================== */}
 
           <div
@@ -203,15 +207,7 @@ function BestSellers() {
                 THE MOST LOVED FRAGRANCES
               </p>
 
-              {/* ==================================================
-                  MAIN TITLE
-
-                  BEST
-                  SELLERS
-
-                  Two lines on every device.
-                  Font automatically scales.
-              ================================================== */}
+              {/* MAIN TITLE */}
 
               <h1
                 className="
@@ -293,6 +289,8 @@ function BestSellers() {
 
           {/* ====================================================
               RIGHT — HERO IMAGE
+              PHONE → ABOVE TEXT
+              DESKTOP → RIGHT
           ==================================================== */}
 
           <div
@@ -420,6 +418,9 @@ function BestSellers() {
 
       {/* ========================================================
           PRODUCTS
+          PHONE → 2 PRODUCTS PER ROW
+          TABLET → 2 PRODUCTS PER ROW
+          DESKTOP → 4 PRODUCTS PER ROW
       ======================================================== */}
 
       <section
@@ -469,12 +470,14 @@ function BestSellers() {
               max-w-7xl
               mx-auto
               grid
-              grid-cols-1
+              grid-cols-2
               sm:grid-cols-2
               lg:grid-cols-4
-              gap-x-8
+              gap-x-3
+              sm:gap-x-6
               md:gap-x-10
-              gap-y-16
+              gap-y-12
+              sm:gap-y-16
               md:gap-y-20
               items-stretch
             "

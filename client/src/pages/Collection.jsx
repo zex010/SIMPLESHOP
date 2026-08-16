@@ -18,7 +18,9 @@ function Collection() {
   useEffect(() => {
     const loadProducts = async () => {
       try {
-        const response = await fetch(`${API_URL}/products`);
+        const response = await fetch(
+          `${API_URL}/products`
+        );
 
         if (!response.ok) {
           throw new Error("Failed to load products");
@@ -28,7 +30,10 @@ function Collection() {
 
         setProducts(data.products || []);
       } catch (error) {
-        console.error("Collection Products Error:", error);
+        console.error(
+          "Collection Products Error:",
+          error
+        );
       } finally {
         setLoading(false);
       }
@@ -51,14 +56,22 @@ function Collection() {
         );
 
         if (!response.ok) {
-          throw new Error("Failed to load collection hero");
+          throw new Error(
+            "Failed to load collection hero"
+          );
         }
 
         const data = await response.json();
 
-        console.log("COLLECTION HERO RESPONSE:", data);
+        console.log(
+          "COLLECTION HERO RESPONSE:",
+          data
+        );
 
-        if (data.success && data.section) {
+        if (
+          data.success &&
+          data.section
+        ) {
           setHero(data.section);
         } else {
           console.warn(
@@ -67,7 +80,11 @@ function Collection() {
           );
         }
       } catch (error) {
-        console.error("Collection Hero Error:", error);
+        console.error(
+          "Collection Hero Error:",
+          error
+        );
+
         setHero(null);
       } finally {
         setHeroLoading(false);
@@ -81,7 +98,8 @@ function Collection() {
   // HERO IMAGE
   // ============================================================
 
-  const heroImage = hero?.imageUrl || "";
+  const heroImage =
+    hero?.imageUrl || "";
 
   // ============================================================
   // PAGE
@@ -89,16 +107,30 @@ function Collection() {
 
   return (
     <div className="min-h-screen bg-white text-black overflow-x-hidden">
+
       <Navbar />
 
       {/* ========================================================
           HERO
-          LEFT  = TEXT
-          RIGHT = IMAGE
-          50 / 50 ON DESKTOP
+
+          PHONE:
+          IMAGE FIRST
+          TEXT SECOND
+
+          DESKTOP:
+          TEXT LEFT
+          IMAGE RIGHT
       ======================================================== */}
 
-      <section className="relative w-full overflow-hidden bg-[#f7f6f3]">
+      <section
+        className="
+          relative
+          w-full
+          overflow-hidden
+          bg-[#f7f6f3]
+        "
+      >
+
         <div
           className="
             grid
@@ -111,147 +143,10 @@ function Collection() {
         >
 
           {/* ====================================================
-              LEFT — TEXT
-          ==================================================== */}
+              HERO IMAGE
 
-          <div
-            className="
-              order-2
-              md:order-1
-              flex
-              items-center
-              justify-center
-              bg-[#f7f6f3]
-              px-5
-              sm:px-8
-              md:px-10
-              lg:px-14
-              xl:px-20
-              py-16
-              sm:py-20
-              md:py-10
-              min-w-0
-              overflow-hidden
-            "
-          >
-            <div
-              className="
-                w-full
-                max-w-xl
-                min-w-0
-                text-center
-                md:text-left
-              "
-            >
-
-              {/* SMALL LABEL */}
-
-              <p
-                className="
-                  uppercase
-                  tracking-[0.45em]
-                  text-[8px]
-                  sm:text-[9px]
-                  md:text-[10px]
-                  text-stone-400
-                  mb-4
-                  sm:mb-5
-                "
-              >
-                {hero?.subtitle || "THE HOUSE OF AVERNUS"}
-              </p>
-
-              {/* CATEGORY */}
-
-              <p
-                className="
-                  uppercase
-                  tracking-[0.28em]
-                  text-[8px]
-                  sm:text-[9px]
-                  md:text-[10px]
-                  text-stone-500
-                  mb-4
-                "
-              >
-                THE FRAGRANCE LIBRARY
-              </p>
-
-              {/* MAIN TITLE */}
-
-              <h1
-  className="
-    font-serif
-    font-normal
-    text-[1.7rem]
-    min-[360px]:text-[1.9rem]
-    sm:text-4xl
-    md:text-5xl
-    lg:text-[3rem]
-    xl:text-[3.4rem]
-    leading-none
-    tracking-[0.01em]
-    whitespace-nowrap
-    text-center
-    lg:text-left
-  "
->
-  {hero?.title || "COLLECTION"}
-</h1>
-              {/* DESCRIPTION */}
-
-              <p
-                className="
-                  mt-6
-                  sm:mt-7
-                  max-w-md
-                  mx-auto
-                  md:mx-0
-                  text-[10px]
-                  sm:text-xs
-                  md:text-sm
-                  leading-6
-                  sm:leading-7
-                  text-stone-500
-                "
-              >
-                {hero?.description ||
-                  "Discover our complete fragrance library, created with character, depth and timeless elegance."}
-              </p>
-
-              {/* DECORATIVE LINE */}
-
-              <div
-                className="
-                  flex
-                  items-center
-                  justify-center
-                  md:justify-start
-                  gap-4
-                  mt-7
-                  sm:mt-8
-                "
-              >
-                <span className="w-8 sm:w-10 h-px bg-black" />
-
-                <span
-                  className="
-                    uppercase
-                    tracking-[0.3em]
-                    text-[7px]
-                    sm:text-[8px]
-                    text-stone-400
-                  "
-                >
-                  AVERNUS
-                </span>
-              </div>
-
-            </div>
-          </div>
-
-          {/* ====================================================
-              RIGHT — HERO IMAGE
+              PHONE = FIRST
+              DESKTOP = RIGHT
           ==================================================== */}
 
           <div
@@ -346,6 +241,7 @@ function Collection() {
                 text-white
               "
             >
+
               <p
                 className="
                   uppercase
@@ -371,15 +267,180 @@ function Collection() {
               >
                 Complete Collection
               </p>
+
+            </div>
+
+          </div>
+
+          {/* ====================================================
+              TEXT
+
+              PHONE = SECOND
+              DESKTOP = LEFT
+
+              SAME BACKGROUND AS NEW ARRIVAL
+          ==================================================== */}
+
+          <div
+            className="
+              order-2
+              md:order-1
+              flex
+              items-center
+              justify-center
+              bg-[#f7f6f3]
+              px-5
+              sm:px-8
+              md:px-10
+              lg:px-14
+              xl:px-20
+              py-16
+              sm:py-20
+              md:py-10
+              min-w-0
+              overflow-hidden
+            "
+          >
+
+            <div
+              className="
+                w-full
+                max-w-xl
+                min-w-0
+                text-center
+                md:text-left
+              "
+            >
+
+              {/* SMALL LABEL */}
+
+              <p
+                className="
+                  uppercase
+                  tracking-[0.45em]
+                  text-[8px]
+                  sm:text-[9px]
+                  md:text-[10px]
+                  text-stone-400
+                  mb-4
+                  sm:mb-5
+                "
+              >
+                {hero?.subtitle ||
+                  "THE HOUSE OF AVERNUS"}
+              </p>
+
+              {/* CATEGORY */}
+
+              <p
+                className="
+                  uppercase
+                  tracking-[0.28em]
+                  text-[8px]
+                  sm:text-[9px]
+                  md:text-[10px]
+                  text-stone-500
+                  mb-4
+                "
+              >
+                THE FRAGRANCE LIBRARY
+              </p>
+
+              {/* MAIN TITLE */}
+
+              <h1
+                className="
+                  font-serif
+                  font-normal
+                  text-[1.7rem]
+                  min-[360px]:text-[1.9rem]
+                  sm:text-4xl
+                  md:text-5xl
+                  lg:text-[3rem]
+                  xl:text-[3.4rem]
+                  leading-none
+                  tracking-[0.01em]
+                  whitespace-nowrap
+                  text-center
+                  md:text-left
+                "
+              >
+                {hero?.title ||
+                  "COLLECTION"}
+              </h1>
+
+              {/* DESCRIPTION */}
+
+              <p
+                className="
+                  mt-6
+                  sm:mt-7
+                  max-w-md
+                  mx-auto
+                  md:mx-0
+                  text-[10px]
+                  sm:text-xs
+                  md:text-sm
+                  leading-6
+                  sm:leading-7
+                  text-stone-500
+                "
+              >
+                {hero?.description ||
+                  "Discover our complete fragrance library, created with character, depth and timeless elegance."}
+              </p>
+
+              {/* DECORATIVE LINE */}
+
+              <div
+                className="
+                  flex
+                  items-center
+                  justify-center
+                  md:justify-start
+                  gap-4
+                  mt-7
+                  sm:mt-8
+                "
+              >
+
+                <span
+                  className="
+                    w-8
+                    sm:w-10
+                    h-px
+                    bg-black
+                  "
+                />
+
+                <span
+                  className="
+                    uppercase
+                    tracking-[0.3em]
+                    text-[7px]
+                    sm:text-[8px]
+                    text-stone-400
+                  "
+                >
+                  AVERNUS
+                </span>
+
+              </div>
+
             </div>
 
           </div>
 
         </div>
+
       </section>
 
       {/* ========================================================
           PRODUCTS
+
+          PHONE  → 2 PRODUCTS PER ROW
+          TABLET → 2 PRODUCTS PER ROW
+          LAPTOP → 4 PRODUCTS PER ROW
       ======================================================== */}
 
       <section
@@ -414,7 +475,13 @@ function Collection() {
 
           /* EMPTY STATE */
 
-          <div className="text-center py-20 px-6">
+          <div
+            className="
+              text-center
+              py-20
+              px-6
+            "
+          >
 
             <h2
               className="
@@ -442,28 +509,32 @@ function Collection() {
               max-w-7xl
               mx-auto
               grid
-              grid-cols-1
+              grid-cols-2
               sm:grid-cols-2
               lg:grid-cols-4
-              gap-x-8
+              gap-x-3
+              sm:gap-x-6
               md:gap-x-10
-              gap-y-16
+              gap-y-12
+              sm:gap-y-16
               md:gap-y-20
               items-stretch
             "
           >
 
-            {products.map((product) => (
-              <ProductCard
-                key={product._id}
-                product={product}
-                badge={
-                  product.isNew
-                    ? "NEW ARRIVAL"
-                    : undefined
-                }
-              />
-            ))}
+            {products.map(
+              (product) => (
+                <ProductCard
+                  key={product._id}
+                  product={product}
+                  badge={
+                    product.isNew
+                      ? "NEW ARRIVAL"
+                      : undefined
+                  }
+                />
+              )
+            )}
 
           </div>
 
@@ -472,6 +543,7 @@ function Collection() {
       </section>
 
       <Footer />
+
     </div>
   );
 }

@@ -95,35 +95,87 @@ function Men() {
 
       {/* =====================================================
           HERO
-          SAME STYLE AS NEW ARRIVALS
-          LEFT  = TEXT
-          RIGHT = IMAGE
+          
+          MOBILE:
+          IMAGE FIRST
+          TEXT SECOND
+
+          DESKTOP:
+          TEXT LEFT
+          IMAGE RIGHT
       ===================================================== */}
 
       <section
         className="
           relative
           w-full
-          min-h-[calc(100svh-70px)]
-          md:min-h-[calc(100vh-70px)]
+          overflow-hidden
+          bg-[#f7f6f3]
           flex
           flex-col
           md:flex-row
-          overflow-hidden
-          bg-[#f7f6f3]
         "
       >
 
         {/* ===================================================
-            LEFT — TEXT
+            HERO IMAGE
+
+            MOBILE → FIRST
+            DESKTOP → RIGHT
         =================================================== */}
 
         <div
           className="
+            relative
+            order-1
+            md:order-2
             w-full
             md:w-1/2
-            min-h-[48vh]
+            h-[55vh]
+            sm:h-[60vh]
+            md:h-[calc(100vh-70px)]
+            min-h-[420px]
             md:min-h-0
+            overflow-hidden
+            bg-stone-100
+          "
+        >
+
+          <img
+            src={heroImage}
+            alt="AVERNUS Men's Fragrance Collection"
+            loading="eager"
+            decoding="async"
+            fetchPriority="high"
+            className="
+              absolute
+              inset-0
+              w-full
+              h-full
+              object-cover
+              object-center
+              select-none
+            "
+            draggable="false"
+          />
+
+        </div>
+
+        {/* ===================================================
+            HERO TEXT
+
+            MOBILE → BELOW IMAGE
+            DESKTOP → LEFT
+        =================================================== */}
+
+        <div
+          className="
+            order-2
+            md:order-1
+            w-full
+            md:w-1/2
+            min-h-[45vh]
+            md:min-h-[calc(100vh-70px)]
             flex
             items-center
             justify-center
@@ -136,10 +188,12 @@ function Men() {
             md:py-10
           "
         >
+
           <div
             className="
               text-center
               max-w-xl
+              w-full
             "
           >
 
@@ -201,7 +255,7 @@ function Men() {
                 "Discover Masculine Fragrances"}
             </p>
 
-            {/* SMALL DECORATIVE LINE */}
+            {/* DECORATIVE LINE */}
 
             <div
               className="
@@ -214,41 +268,6 @@ function Men() {
             />
 
           </div>
-        </div>
-
-        {/* ===================================================
-            RIGHT — HERO IMAGE
-        =================================================== */}
-
-        <div
-          className="
-            relative
-            w-full
-            md:w-1/2
-            min-h-[52vh]
-            md:min-h-0
-            overflow-hidden
-            bg-stone-100
-          "
-        >
-
-          <img
-            src={heroImage}
-            alt="AVERNUS Men's Fragrance Collection"
-            loading="eager"
-            decoding="async"
-            fetchPriority="high"
-            className="
-              absolute
-              inset-0
-              w-full
-              h-full
-              object-cover
-              object-center
-              select-none
-            "
-            draggable="false"
-          />
 
         </div>
 
@@ -256,6 +275,9 @@ function Men() {
 
       {/* =====================================================
           PRODUCTS
+          PHONE → 2 PRODUCTS PER ROW
+          TABLET → 2 PRODUCTS PER ROW
+          LAPTOP → 4 PRODUCTS PER ROW
       ===================================================== */}
 
       <section
@@ -309,9 +331,7 @@ function Men() {
 
         </div>
 
-        {/* ===================================================
-            PRODUCTS
-        =================================================== */}
+        {/* PRODUCTS */}
 
         {products.length === 0 ? (
 
@@ -354,12 +374,14 @@ function Men() {
               max-w-7xl
               mx-auto
               grid
-              grid-cols-1
+              grid-cols-2
               sm:grid-cols-2
               lg:grid-cols-4
-              gap-x-8
+              gap-x-3
+              sm:gap-x-6
               md:gap-x-10
-              gap-y-16
+              gap-y-12
+              sm:gap-y-16
               md:gap-y-20
               items-stretch
             "

@@ -1,4 +1,3 @@
-
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
@@ -55,6 +54,14 @@ export default function Navbar() {
   });
 
   const [userName, setUserName] = useState("");
+
+  // ============================================================
+  // REFS
+  // ============================================================
+
+  const searchPanelRef = useRef(null);
+  const searchInputRef = useRef(null);
+  const accountRef = useRef(null);
 
   // ============================================================
   // LOAD USER NAME
@@ -260,10 +267,7 @@ export default function Navbar() {
     document.addEventListener("mousedown", handleAccountOutside);
 
     return () => {
-      document.removeEventListener(
-        "mousedown",
-        handleAccountOutside
-      );
+      document.removeEventListener("mousedown", handleAccountOutside);
     };
   }, [accountOpen]);
 
@@ -401,14 +405,6 @@ export default function Navbar() {
     navigate("/home");
   };
 
-  // ============================================================
-  // REFS
-  // ============================================================
-
-  const searchPanelRef = useRef(null);
-  const searchInputRef = useRef(null);
-  const accountRef = useRef(null);
-
   return (
     <>
       {/* ======================================================
@@ -441,13 +437,13 @@ export default function Navbar() {
 
         <div className="max-w-7xl mx-auto px-4 md:px-8">
 
-          <div className="h-16 md:h-20 flex items-center justify-between relative">
+          <div className="h-16 md:h-20 flex items-center relative">
 
             {/* ==================================================
                 LEFT ACTIONS
             ================================================== */}
 
-            <div className="flex items-center gap-2.5 md:gap-5">
+            <div className="absolute left-0 flex items-center gap-2.5 md:gap-5">
 
               {!isHomePage && (
                 <button
@@ -479,15 +475,30 @@ export default function Navbar() {
                 CENTER LOGO
             ================================================== */}
 
-            <div className="absolute left-1/2 -translate-x-1/2">
+            <div className="absolute left-1/2 -translate-x-1/2 z-10">
               <BrandLogo variant="navbar" />
             </div>
 
             {/* ==================================================
                 RIGHT ACTIONS
+                FAR RIGHT ON BOTH MOBILE + DESKTOP
             ================================================== */}
 
-            <div className="flex items-center gap-2.5 md:gap-5 text-stone-800">
+            <div
+              className="
+                absolute
+                right-0
+                top-1/2
+                -translate-y-1/2
+                flex
+                items-center
+                gap-2
+                sm:gap-3
+                md:gap-4
+                lg:gap-5
+                text-stone-800
+              "
+            >
 
               {/* SEARCH */}
 
@@ -505,14 +516,14 @@ export default function Navbar() {
                 }`}
               >
                 <Search
-                  size={17}
+                  size={16}
                   strokeWidth={1.5}
                   className="md:w-[19px] md:h-[19px]"
                 />
               </button>
 
               {/* ==================================================
-                  ACCOUNT / PERSON ICON
+                  ACCOUNT
               ================================================== */}
 
               <div
@@ -527,12 +538,26 @@ export default function Navbar() {
                   title={
                     isLoggedIn ? "My Account" : "Sign In"
                   }
-                  className="flex items-center justify-center hover:text-stone-500 transition p-1 cursor-pointer"
+                  className="
+                    flex
+                    items-center
+                    justify-center
+                    hover:text-stone-500
+                    transition
+                    p-0.5
+                    sm:p-1
+                    cursor-pointer
+                  "
                 >
                   <UserRound
-                    size={17}
+                    size={15}
                     strokeWidth={1.5}
-                    className="md:w-[19px] md:h-[19px]"
+                    className="
+                      sm:w-[17px]
+                      sm:h-[17px]
+                      md:w-[19px]
+                      md:h-[19px]
+                    "
                   />
                 </button>
 
@@ -579,12 +604,17 @@ export default function Navbar() {
               <button
                 onClick={() => navigate("/wishlist")}
                 aria-label="Wishlist"
-                className="relative flex hover:text-stone-500 transition p-1 cursor-pointer"
+                className="relative flex hover:text-stone-500 transition p-0.5 sm:p-1 cursor-pointer"
               >
                 <Heart
-                  size={17}
+                  size={15}
                   strokeWidth={1.5}
-                  className="md:w-[19px] md:h-[19px]"
+                  className="
+                    sm:w-[17px]
+                    sm:h-[17px]
+                    md:w-[19px]
+                    md:h-[19px]
+                  "
                 />
 
                 {wishlistCount > 0 && (
@@ -601,12 +631,17 @@ export default function Navbar() {
               <button
                 onClick={() => navigate("/cart")}
                 aria-label="Cart"
-                className="relative hover:text-stone-500 transition p-1 cursor-pointer"
+                className="relative flex hover:text-stone-500 transition p-0.5 sm:p-1 cursor-pointer"
               >
                 <ShoppingBag
-                  size={17}
+                  size={15}
                   strokeWidth={1.5}
-                  className="md:w-[19px] md:h-[19px]"
+                  className="
+                    sm:w-[17px]
+                    sm:h-[17px]
+                    md:w-[19px]
+                    md:h-[19px]
+                  "
                 />
 
                 {cartCount > 0 && (
@@ -627,12 +662,26 @@ export default function Navbar() {
                 }}
                 aria-label="Open Menu"
                 title="Menu"
-                className="flex items-center justify-center hover:text-stone-500 transition p-1 cursor-pointer"
+                className="
+                  flex
+                  items-center
+                  justify-center
+                  hover:text-stone-500
+                  transition
+                  cursor-pointer
+                  p-0
+                  sm:p-1
+                "
               >
                 <Menu
-                  size={17}
+                  size={13}
                   strokeWidth={1.5}
-                  className="md:w-[19px] md:h-[19px]"
+                  className="
+                    sm:w-[15px]
+                    sm:h-[15px]
+                    md:w-[18px]
+                    md:h-[18px]
+                  "
                 />
               </button>
 
@@ -1172,4 +1221,3 @@ export default function Navbar() {
     </>
   );
 }
-

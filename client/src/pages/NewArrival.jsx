@@ -91,11 +91,17 @@ function NewArrival() {
 
   return (
     <div className="min-h-screen bg-white text-black">
+
       <Navbar />
 
       {/* =====================================================
           HERO
-          SPLIT SCREEN
+          
+          PHONE:
+          1. IMAGE
+          2. TEXT
+
+          DESKTOP:
           LEFT  = TEXT
           RIGHT = IMAGE
       ===================================================== */}
@@ -115,120 +121,22 @@ function NewArrival() {
       >
 
         {/* ===================================================
-            LEFT — TEXT
-        =================================================== */}
+            IMAGE
 
-        <div
-          className="
-            w-full
-            md:w-1/2
-            min-h-[48vh]
-            md:min-h-0
-            flex
-            items-center
-            justify-center
-            bg-[#f7f6f3]
-            px-6
-            sm:px-10
-            md:px-12
-            lg:px-20
-            py-16
-            md:py-10
-          "
-        >
-          <div className="text-center max-w-xl">
-
-            {/* SMALL LABEL */}
-
-            <p
-              className="
-                uppercase
-                tracking-[0.5em]
-                text-[9px]
-                sm:text-[10px]
-                md:text-xs
-                text-stone-400
-                mb-6
-                md:mb-8
-              "
-            >
-              {hero?.subtitle ||
-                "A V E R N U S"}
-            </p>
-
-            {/* =================================================
-                TITLE
-                NEW
-                ARRIVAL
-            ================================================= */}
-
-            <h1
-              className="
-                font-serif
-                font-normal
-                uppercase
-                text-5xl
-                sm:text-6xl
-                md:text-7xl
-                lg:text-8xl
-                xl:text-9xl
-                leading-[0.85]
-                tracking-[0.04em]
-              "
-            >
-              <span className="block">
-                NEW
-              </span>
-
-              <span className="block">
-                ARRIVAL
-              </span>
-            </h1>
-
-            {/* DESCRIPTION */}
-
-            <p
-              className="
-                mt-8
-                md:mt-10
-                uppercase
-                tracking-[0.25em]
-                text-[9px]
-                sm:text-[10px]
-                md:text-xs
-                text-stone-500
-                leading-6
-              "
-            >
-              {hero?.description ||
-                "The Latest Additions To Our Collection"}
-            </p>
-
-            {/* SMALL DECORATIVE LINE */}
-
-            <div
-              className="
-                mx-auto
-                mt-8
-                w-12
-                h-px
-                bg-stone-300
-              "
-            />
-
-          </div>
-        </div>
-
-        {/* ===================================================
-            RIGHT — IMAGE
+            PHONE = FIRST
+            DESKTOP = RIGHT
         =================================================== */}
 
         <div
           className="
             relative
+            order-1
             w-full
+            md:order-2
             md:w-1/2
-            min-h-[52vh]
+            h-[52vh]
+            sm:h-[58vh]
+            md:h-auto
             md:min-h-0
             overflow-hidden
             bg-stone-100
@@ -282,24 +190,148 @@ function NewArrival() {
 
         </div>
 
+        {/* ===================================================
+            TEXT
+
+            PHONE = SECOND
+            DESKTOP = LEFT
+        =================================================== */}
+
+        <div
+          className="
+            order-2
+            w-full
+            md:order-1
+            md:w-1/2
+            min-h-[48vh]
+            md:min-h-0
+            flex
+            items-center
+            justify-center
+            bg-[#f7f6f3]
+            px-6
+            sm:px-10
+            md:px-12
+            lg:px-20
+            py-16
+            md:py-10
+          "
+        >
+
+          <div
+            className="
+              text-center
+              max-w-xl
+            "
+          >
+
+            {/* SMALL LABEL */}
+
+            <p
+              className="
+                uppercase
+                tracking-[0.5em]
+                text-[9px]
+                sm:text-[10px]
+                md:text-xs
+                text-stone-400
+                mb-6
+                md:mb-8
+              "
+            >
+              {hero?.subtitle ||
+                "A V E R N U S"}
+            </p>
+
+            {/* =================================================
+                TITLE
+            ================================================= */}
+
+            <h1
+              className="
+                font-serif
+                font-normal
+                uppercase
+                text-5xl
+                sm:text-6xl
+                md:text-7xl
+                lg:text-8xl
+                xl:text-9xl
+                leading-[0.85]
+                tracking-[0.04em]
+              "
+            >
+
+              <span className="block">
+                NEW
+              </span>
+
+              <span className="block">
+                ARRIVAL
+              </span>
+
+            </h1>
+
+            {/* DESCRIPTION */}
+
+            <p
+              className="
+                mt-8
+                md:mt-10
+                uppercase
+                tracking-[0.25em]
+                text-[9px]
+                sm:text-[10px]
+                md:text-xs
+                text-stone-500
+                leading-6
+              "
+            >
+              {hero?.description ||
+                "The Latest Additions To Our Collection"}
+            </p>
+
+            {/* DECORATIVE LINE */}
+
+            <div
+              className="
+                mx-auto
+                mt-8
+                w-12
+                h-px
+                bg-stone-300
+              "
+            />
+
+          </div>
+
+        </div>
+
       </section>
 
       {/* =====================================================
           PRODUCTS
+          
+          PHONE  → 2 PRODUCTS PER ROW
+          TABLET → 2 PRODUCTS PER ROW
+          LAPTOP → 4 PRODUCTS PER ROW
       ===================================================== */}
 
       <section
         className="
-          px-6
-          sm:px-8
+          px-5
+          sm:px-7
           md:px-12
           lg:px-16
           py-16
           md:py-20
         "
       >
+
         {loading ? (
+
           <div className="py-20 text-center">
+
             <p
               className="
                 uppercase
@@ -310,14 +342,18 @@ function NewArrival() {
             >
               Loading...
             </p>
+
           </div>
+
         ) : products.length === 0 ? (
+
           <div
             className="
               text-center
               py-20
             "
           >
+
             <h2
               className="
                 font-serif
@@ -340,21 +376,29 @@ function NewArrival() {
               Check back soon for our
               latest creations.
             </p>
+
           </div>
+
         ) : (
+
           <div
             className="
+              max-w-7xl
+              mx-auto
               grid
-              grid-cols-1
+              grid-cols-2
               sm:grid-cols-2
               lg:grid-cols-4
-              gap-x-8
+              gap-x-3
+              sm:gap-x-6
               lg:gap-x-10
-              gap-y-16
-              md:gap-y-20
+              gap-y-12
+              sm:gap-y-16
+              lg:gap-y-20
               items-stretch
             "
           >
+
             {products.map(
               (product) => (
                 <ProductCard
@@ -364,8 +408,11 @@ function NewArrival() {
                 />
               )
             )}
+
           </div>
+
         )}
+
       </section>
 
       {/* =====================================================
@@ -373,6 +420,7 @@ function NewArrival() {
       ===================================================== */}
 
       <Footer />
+
     </div>
   );
 }
