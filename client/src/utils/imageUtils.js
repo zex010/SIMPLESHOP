@@ -1,15 +1,18 @@
+
+// client/src/utils/imageUtils.js
+
 export const resolveImage = (image) => {
   if (!image) return "";
 
-  if (
-    image.startsWith("http://") ||
-    image.startsWith("https://") ||
-    image.startsWith("data:")
-  ) {
+  if (image.startsWith("http://") || image.startsWith("https://")) {
     return image;
   }
 
-  return image;
+  if (image.startsWith("/")) {
+    return image;
+  }
+
+  return `/uploads/${image}`;
 };
 
 export const getDisplayName = (product) => {
@@ -18,6 +21,7 @@ export const getDisplayName = (product) => {
   return (
     product.name ||
     product.title ||
-    "Product"
+    "AVERNUS"
   );
 };
+
