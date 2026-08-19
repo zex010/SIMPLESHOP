@@ -14,6 +14,7 @@ const r2 = new S3Client({
 });
 
 const BUCKET_NAME = process.env.R2_BUCKET_NAME;
+console.log("R2 BUCKET FROM CONFIG:", BUCKET_NAME);
 
 module.exports = {
   r2,

@@ -98,10 +98,15 @@ const SIZE_OPTIONS = [
   },
 ];
 
+/* ============================================================
+   DEMO PRODUCT
+============================================================ */
+
 function getDemoProduct(id) {
   return (
-    DEMO_PRODUCTS.find((product) => product._id === id) ||
-    DEMO_PRODUCTS[0]
+    DEMO_PRODUCTS.find(
+      (product) => product._id === id
+    ) || DEMO_PRODUCTS[0]
   );
 }
 
@@ -402,26 +407,34 @@ function ProductDetails() {
         className="
           relative
           w-full
-          min-h-[620px]
-          h-[calc(100svh-64px)]
-          max-h-[900px]
+          min-h-0
+          md:min-h-[620px]
+          md:h-[calc(100svh-64px)]
+          md:max-h-[900px]
           overflow-hidden
           bg-black
         "
       >
+
         {/* ====================================================
-            IMAGE — LEFT / HALF OF HERO
+            PRODUCT IMAGE
+            MOBILE = CLEAR IMAGE
+            DESKTOP = LEFT SIDE IMAGE
         ==================================================== */}
 
         <div
           className="
-            absolute
-            inset-y-0
-            left-0
+            relative
             w-full
+            h-[58svh]
+            min-h-[400px]
+            md:absolute
+            md:inset-y-0
+            md:left-0
             md:w-[54%]
+            md:h-full
             overflow-hidden
-            bg-black
+            bg-white
           "
         >
           <img
@@ -448,140 +461,68 @@ function ProductDetails() {
             draggable="false"
           />
 
-          {/* IMAGE SHADING */}
+          {/* ==================================================
+              DESKTOP IMAGE SHADING ONLY
+              NO MOBILE SHADOW
+          ================================================== */}
+
           <div
             className="
+              hidden
+              md:block
               absolute
               inset-0
               bg-gradient-to-r
               from-black/5
               via-transparent
               to-black/20
+              pointer-events-none
             "
           />
         </div>
 
         {/* ====================================================
-            RIGHT SIDE DARK PRODUCT PANEL
+            DESKTOP RIGHT SIDE DARK PANEL
         ==================================================== */}
 
         <div
           className="
+            hidden
+            md:block
             absolute
             inset-y-0
             right-0
+            w-[46%]
+            bg-black
+          "
+        />
+
+        {/* ====================================================
+            MOBILE PRODUCT INFORMATION
+            BLACK AREA BELOW CLEAR IMAGE
+        ==================================================== */}
+
+        <div
+          className="
+            relative
             w-full
-            md:w-[46%]
-            bg-black/80
-            md:bg-black
-          "
-        />
-
-        {/* ====================================================
-            MOBILE IMAGE OVERLAY
-        ==================================================== */}
-
-        <div
-          className="
-            absolute
-            inset-0
-            md:hidden
-            bg-gradient-to-t
-            from-black/95
-            via-black/35
-            to-transparent
-          "
-        />
-
-        {/* ====================================================
-            THUMBNAILS
-        ==================================================== */}
-
-        {images.length > 1 && (
-          <div
-            className="
-              absolute
-              right-4
-              md:right-[47%]
-              top-1/2
-              -translate-y-1/2
-              z-30
-              flex
-              flex-col
-              gap-2
-            "
-          >
-            {images.map(
-              (image, index) => (
-                <button
-                  key={index}
-                  type="button"
-                  onClick={() =>
-                    setActiveImage(
-                      index
-                    )
-                  }
-                  className={`
-                    w-10
-                    h-10
-                    md:w-12
-                    md:h-12
-                    overflow-hidden
-                    border
-                    transition
-                    bg-black/20
-                    ${
-                      activeImage ===
-                      index
-                        ? "border-white"
-                        : "border-white/30"
-                    }
-                  `}
-                >
-                  <img
-                    src={resolveImageSrc(
-                      image
-                    )}
-                    alt={`${product.name} ${
-                      index + 1
-                    }`}
-                    className="
-                      w-full
-                      h-full
-                      object-cover
-                    "
-                  />
-                </button>
-              )
-            )}
-          </div>
-        )}
-
-        {/* ====================================================
-            PRODUCT DETAILS
-        ==================================================== */}
-
-        <div
-          className="
-            absolute
-            z-20
-            left-0
-            right-0
-            bottom-0
+            bg-black
+            md:absolute
+            md:z-20
             md:left-[54%]
             md:right-0
             md:top-0
             md:bottom-0
+            md:w-auto
             flex
-            items-end
-            md:items-center
+            items-center
             px-5
             sm:px-8
             md:px-10
             lg:px-14
-            pb-7
-            sm:pb-9
-            md:pb-10
+            py-8
+            sm:py-10
+            md:py-10
           "
         >
           <div className="w-full">
@@ -714,7 +655,8 @@ function ProductDetails() {
                 mt-5
               "
             >
-              {/* ADD */}
+
+              {/* ADD TO BAG */}
               <button
                 type="button"
                 onClick={
@@ -757,7 +699,7 @@ function ProductDetails() {
                 )}
               </button>
 
-              {/* BUY */}
+              {/* BUY NOW */}
               <button
                 type="button"
                 onClick={
@@ -832,6 +774,71 @@ function ProductDetails() {
             </div>
           </div>
         </div>
+
+        {/* ====================================================
+            THUMBNAILS
+        ==================================================== */}
+
+        {images.length > 1 && (
+          <div
+            className="
+              absolute
+              right-4
+              md:right-[47%]
+              top-[29%]
+              md:top-1/2
+              -translate-y-1/2
+              z-30
+              flex
+              flex-col
+              gap-2
+            "
+          >
+            {images.map(
+              (image, index) => (
+                <button
+                  key={index}
+                  type="button"
+                  onClick={() =>
+                    setActiveImage(
+                      index
+                    )
+                  }
+                  className={`
+                    w-10
+                    h-10
+                    md:w-12
+                    md:h-12
+                    overflow-hidden
+                    border
+                    transition
+                    bg-white/20
+                    ${
+                      activeImage ===
+                      index
+                        ? "border-black md:border-white"
+                        : "border-black/30 md:border-white/30"
+                    }
+                  `}
+                >
+                  <img
+                    src={resolveImageSrc(
+                      image
+                    )}
+                    alt={`${product.name} ${
+                      index + 1
+                    }`}
+                    className="
+                      w-full
+                      h-full
+                      object-cover
+                    "
+                  />
+                </button>
+              )
+            )}
+          </div>
+        )}
       </section>
 
       {/* ======================================================
@@ -903,14 +910,10 @@ function ProductDetails() {
         </div>
 
         {/* ====================================================
-            SPACE BEFORE NOTES
+            NOTES
         ==================================================== */}
 
         <div className="mt-14 md:mt-20">
-
-          {/* ==================================================
-              FRAGRANCE NOTES
-          ================================================== */}
 
           <div
             className="
@@ -1080,15 +1083,10 @@ function ProductDetails() {
           </div>
 
           {/* ==================================================
-              SPACE BETWEEN NOTES AND DETAILS
+              STORY / INGREDIENTS / SHIPPING
           ================================================== */}
 
           <div className="h-6 md:h-8" />
-
-          {/* ==================================================
-              STORY / INGREDIENTS / SHIPPING
-              SAME STYLE AS NOTES
-          ================================================== */}
 
           <div
             className="

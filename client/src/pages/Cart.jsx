@@ -11,40 +11,117 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { useShop } from "../context/ShopContext";
 
+/* ============================================================
+   IMAGE RESOLVER
+============================================================ */
+
 function resolveImageSrc(src) {
   if (!src) return "/placeholder.png";
 
-  return src.startsWith("http")
-    ? src
-    : `https://avernus-api.onrender.com${src}`;
+  if (src.startsWith("http")) {
+    return src;
+  }
+
+  return `https://avernus-api.onrender.com/${src.replace(
+    /^\/+/,
+    ""
+  )}`;
 }
 
+/* ============================================================
+   SIZE OPTIONS
+============================================================ */
+
+const SIZE_OPTIONS = [
+  {
+    label: "30ML",
+    multiplier: 0.5,
+  },
+  {
+    label: "50ML",
+    multiplier: 0.72,
+  },
+  {
+    label: "100ML",
+    multiplier: 1,
+  },
+];
+
+/* ============================================================
+   SIZE PRICE
+============================================================ */
+
+function getSizePrice(item, size) {
+  const basePrice = Number(
+    item.basePrice ??
+      item.originalPrice ??
+      item.price ??
+      0
+  );
+
+  const sizeInfo =
+    SIZE_OPTIONS.find(
+      (option) => option.label === size
+    ) || SIZE_OPTIONS[1];
+
+  return Math.round(
+    basePrice * sizeInfo.multiplier
+  );
+}
+
+/* ============================================================
+   CART
+============================================================ */
+
 export default function Cart() {
-  const { cart, removeFromCart, updateQuantity } = useShop();
+  const {
+    cart,
+    removeFromCart,
+    updateQuantity,
+    updateCartSize,
+  } = useShop();
+
   const navigate = useNavigate();
+
+  /* ==========================================================
+     TOTAL
+  ========================================================== */
 
   const totalAmount = cart.reduce(
     (sum, item) =>
-      sum + Number(item.price || 0) * Number(item.qty || 0),
+      sum +
+      Number(item.price || 0) *
+        Number(item.qty || 0),
     0
   );
 
+  /* ==========================================================
+     CHECKOUT
+  ========================================================== */
+
   const handleCheckout = () => {
     if (cart.length === 0) return;
+
     navigate("/checkout");
   };
 
+  /* ==========================================================
+     PAGE
+  ========================================================== */
+
   return (
     <div className="min-h-screen bg-white text-stone-900 flex flex-col overflow-x-hidden">
+
       <Navbar />
 
       <main className="flex-grow w-full max-w-6xl mx-auto px-5 sm:px-7 md:px-10 py-12 md:py-16">
 
-        {/* ======================================================
+        {/* ====================================================
             PAGE TITLE
-        ====================================================== */}
+        ==================================================== */}
 
         <div className="mb-10">
+
           <p className="text-[9px] uppercase tracking-[0.45em] text-stone-400 mb-3">
             AVERNUS
           </p>
@@ -54,15 +131,20 @@ export default function Cart() {
           </h1>
 
           <p className="mt-2 text-[10px] uppercase tracking-[0.25em] text-stone-400">
-            {cart.length} {cart.length === 1 ? "Item" : "Items"}
+            {cart.length}{" "}
+            {cart.length === 1
+              ? "Item"
+              : "Items"}
           </p>
+
         </div>
 
-        {/* ======================================================
+        {/* ====================================================
             EMPTY CART
-        ====================================================== */}
+        ==================================================== */}
 
         {cart.length === 0 ? (
+
           <div className="py-20 text-center flex flex-col items-center">
 
             <ShoppingBag
@@ -95,12 +177,14 @@ export default function Cart() {
             >
               Discover Fragrances
             </Link>
+
           </div>
+
         ) : (
 
-          /* ====================================================
+          /* ==================================================
              CART CONTENT
-          ==================================================== */
+          ================================================== */
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 items-stretch">
 
@@ -119,11 +203,14 @@ export default function Cart() {
               "
             >
 
-              {/* CARD HEADER */}
+              {/* ==================================================
+                  CARD HEADER
+              ================================================== */}
 
               <div className="px-6 py-5 border-b border-stone-200 flex items-center justify-between">
 
                 <div>
+
                   <p className="text-[9px] uppercase tracking-[0.35em] text-stone-400">
                     Your Selection
                   </p>
@@ -131,6 +218,7 @@ export default function Cart() {
                   <h2 className="font-serif text-xl mt-1 uppercase">
                     Shopping Bag
                   </h2>
+
                 </div>
 
                 <ShoppingBag
@@ -141,213 +229,338 @@ export default function Cart() {
 
               </div>
 
-              {/* PRODUCTS */}
+              {/* ==================================================
+                  PRODUCTS
+              ================================================== */}
 
               <div className="flex-1">
 
-                {cart.map((item) => (
+                {cart.map((item) => {
 
-                  <div
-                    key={`${item._id}-${item.selectedSize}`}
-                    className="
-                      p-5
-                      sm:p-6
-                      border-b
-                      border-stone-200
-                      last:border-b-0
-                    "
-                  >
+                  /*
+                    If an old cart item doesn't have selectedSize,
+                    automatically treat it as 50ML.
+                  */
 
-                    <div className="flex gap-5">
+                  const selectedSize =
+                    item.selectedSize || "50ML";
 
-                      {/* PRODUCT IMAGE */}
+                  return (
 
-                      <div
-                        className="
-                          w-28
-                          h-28
-                          sm:w-32
-                          sm:h-32
-                          shrink-0
-                          bg-[#f8f8f8]
-                          p-3
-                          overflow-hidden
-                        "
-                      >
-                        <img
-                          src={resolveImageSrc(item.image)}
-                          alt={item.name}
-                          className="w-full h-full object-contain"
-                          onError={(event) => {
-                            event.currentTarget.src =
-                              "/placeholder.png";
-                          }}
-                        />
-                      </div>
+                    <div
+                      key={`${item._id}-${selectedSize}`}
+                      className="
+                        p-5
+                        sm:p-6
+                        border-b
+                        border-stone-200
+                        last:border-b-0
+                      "
+                    >
 
-                      {/* PRODUCT DETAILS */}
+                      <div className="flex gap-5">
 
-                      <div className="flex-1 min-w-0 flex flex-col">
+                        {/* ==================================================
+                            PRODUCT IMAGE
+                        ================================================== */}
 
-                        <div className="flex justify-between gap-4">
+                        <div
+                          className="
+                            w-28
+                            h-28
+                            sm:w-32
+                            sm:h-32
+                            shrink-0
+                            bg-[#f8f8f8]
+                            p-3
+                            overflow-hidden
+                          "
+                        >
 
-                          <div className="min-w-0">
+                          <img
+                            src={resolveImageSrc(
+                              item.image ||
+                              item.images?.[0]
+                            )}
+                            alt={item.name}
+                            className="
+                              w-full
+                              h-full
+                              object-contain
+                            "
+                            onError={(event) => {
+                              event.currentTarget.src =
+                                "/placeholder.png";
+                            }}
+                          />
+
+                        </div>
+
+                        {/* ==================================================
+                            PRODUCT DETAILS
+                        ================================================== */}
+
+                        <div className="flex-1 min-w-0 flex flex-col">
+
+                          <div className="flex justify-between gap-4">
+
+                            <div className="min-w-0">
+
+                              {/* BRAND */}
+
+                              <p
+                                className="
+                                  text-[9px]
+                                  uppercase
+                                  tracking-[0.25em]
+                                  text-stone-400
+                                "
+                              >
+                                {item.brand ||
+                                  "AVERNUS"}
+                              </p>
+
+                              {/* PRODUCT NAME */}
+
+                              <h3
+                                className="
+                                  font-serif
+                                  text-xl
+                                  leading-tight
+                                  mt-1
+                                  break-words
+                                "
+                              >
+                                {item.name}
+                              </h3>
+
+                              {/* ==================================================
+                                  SIZE SELECTOR
+                              ================================================== */}
+
+                              <div className="mt-4">
+
+                                <p
+                                  className="
+                                    text-[8px]
+                                    uppercase
+                                    tracking-[0.2em]
+                                    text-stone-400
+                                    mb-2
+                                  "
+                                >
+                                  Select Size
+                                </p>
+
+                                <div className="flex flex-wrap gap-1.5">
+
+                                  {SIZE_OPTIONS.map(
+                                    (size) => {
+
+                                      const isSelected =
+                                        selectedSize ===
+                                        size.label;
+
+                                      return (
+
+                                        <button
+                                          key={
+                                            size.label
+                                          }
+                                          type="button"
+                                          onClick={() => {
+
+                                            if (
+                                              selectedSize ===
+                                              size.label
+                                            ) {
+                                              return;
+                                            }
+
+                                            updateCartSize(
+                                              item._id,
+                                              selectedSize,
+                                              size.label
+                                            );
+                                          }}
+                                          className={`
+                                            px-2.5
+                                            py-1.5
+                                            border
+                                            text-[8px]
+                                            uppercase
+                                            tracking-[0.12em]
+                                            transition
+
+                                            ${
+                                              isSelected
+                                                ? "bg-black text-white border-black"
+                                                : "bg-white text-stone-500 border-stone-300 hover:border-black hover:text-black"
+                                            }
+                                          `}
+                                        >
+                                          {size.label}
+                                        </button>
+
+                                      );
+                                    }
+                                  )}
+
+                                </div>
+
+                              </div>
+
+                              {/* CURRENT SIZE */}
+
+                              <p
+                                className="
+                                  text-[9px]
+                                  mt-2
+                                  uppercase
+                                  tracking-[0.18em]
+                                  text-stone-500
+                                "
+                              >
+                                Size:{" "}
+                                {selectedSize}
+                              </p>
+
+                            </div>
+
+                            {/* ==================================================
+                                ITEM TOTAL
+                            ================================================== */}
 
                             <p
-                              className="
-                                text-[9px]
-                                uppercase
-                                tracking-[0.25em]
-                                text-stone-400
-                              "
-                            >
-                              {item.brand || "AVERNUS"}
-                            </p>
-
-                            <h3
                               className="
                                 font-serif
-                                text-xl
-                                leading-tight
-                                mt-1
-                                break-words
+                                text-base
+                                shrink-0
                               "
                             >
-                              {item.name}
-                            </h3>
-
-                            <p
-                              className="
-                                text-[9px]
-                                mt-2
-                                uppercase
-                                tracking-[0.18em]
-                                text-stone-500
-                              "
-                            >
-                              Size: {item.selectedSize}
+                              $
+                              {(
+                                Number(
+                                  item.price || 0
+                                ) *
+                                Number(
+                                  item.qty || 0
+                                )
+                              ).toFixed(2)}
                             </p>
 
                           </div>
 
-                          {/* PRICE */}
+                          {/* ==================================================
+                              QUANTITY + REMOVE
+                          ================================================== */}
 
-                          <p
-                            className="
-                              font-serif
-                              text-base
-                              shrink-0
-                            "
-                          >
-                            $
-                            {(
-                              Number(item.price || 0) *
-                              Number(item.qty || 0)
-                            ).toFixed(2)}
-                          </p>
+                          <div className="flex items-center justify-between mt-auto pt-6">
 
-                        </div>
+                            {/* QUANTITY */}
 
-                        {/* QUANTITY + REMOVE */}
+                            <div
+                              className="
+                                border
+                                border-stone-300
+                                flex
+                                items-center
+                                h-9
+                              "
+                            >
 
-                        <div className="flex items-center justify-between mt-auto pt-6">
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  updateQuantity(
+                                    item._id,
+                                    selectedSize,
+                                    -1
+                                  )
+                                }
+                                className="
+                                  w-9
+                                  h-full
+                                  flex
+                                  items-center
+                                  justify-center
+                                  hover:bg-stone-50
+                                  transition
+                                "
+                                aria-label="Decrease quantity"
+                              >
+                                <Minus size={11} />
+                              </button>
 
-                          <div
-                            className="
-                              border
-                              border-stone-300
-                              flex
-                              items-center
-                              h-9
-                            "
-                          >
+                              <span
+                                className="
+                                  min-w-[32px]
+                                  text-center
+                                  text-xs
+                                "
+                              >
+                                {item.qty}
+                              </span>
+
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  updateQuantity(
+                                    item._id,
+                                    selectedSize,
+                                    1
+                                  )
+                                }
+                                className="
+                                  w-9
+                                  h-full
+                                  flex
+                                  items-center
+                                  justify-center
+                                  hover:bg-stone-50
+                                  transition
+                                "
+                                aria-label="Increase quantity"
+                              >
+                                <Plus size={11} />
+                              </button>
+
+                            </div>
+
+                            {/* REMOVE */}
 
                             <button
                               type="button"
                               onClick={() =>
-                                updateQuantity(
+                                removeFromCart(
                                   item._id,
-                                  item.selectedSize,
-                                  -1
+                                  selectedSize
                                 )
                               }
                               className="
-                                w-9
-                                h-full
-                                flex
-                                items-center
-                                justify-center
-                                hover:bg-stone-50
+                                text-stone-400
+                                hover:text-black
+                                transition
+                                p-2
                               "
-                              aria-label="Decrease quantity"
+                              aria-label="Remove item"
                             >
-                              <Minus size={11} />
-                            </button>
-
-                            <span
-                              className="
-                                min-w-[32px]
-                                text-center
-                                text-xs
-                              "
-                            >
-                              {item.qty}
-                            </span>
-
-                            <button
-                              type="button"
-                              onClick={() =>
-                                updateQuantity(
-                                  item._id,
-                                  item.selectedSize,
-                                  1
-                                )
-                              }
-                              className="
-                                w-9
-                                h-full
-                                flex
-                                items-center
-                                justify-center
-                                hover:bg-stone-50
-                              "
-                              aria-label="Increase quantity"
-                            >
-                              <Plus size={11} />
+                              <Trash2
+                                size={16}
+                                strokeWidth={1.3}
+                              />
                             </button>
 
                           </div>
 
-                          <button
-                            type="button"
-                            onClick={() =>
-                              removeFromCart(
-                                item._id,
-                                item.selectedSize
-                              )
-                            }
-                            className="
-                              text-stone-400
-                              hover:text-black
-                              transition
-                              p-2
-                            "
-                            aria-label="Remove item"
-                          >
-                            <Trash2
-                              size={16}
-                              strokeWidth={1.3}
-                            />
-                          </button>
-
                         </div>
 
                       </div>
+
                     </div>
 
-                  </div>
-
-                ))}
+                  );
+                })}
 
               </div>
 
@@ -382,7 +595,7 @@ export default function Cart() {
 
               </div>
 
-              {/* SUMMARY CONTENT */}
+              {/* SUMMARY */}
 
               <div className="p-6 flex-1 flex flex-col">
 
@@ -397,7 +610,10 @@ export default function Cart() {
                     </span>
 
                     <span>
-                      ${totalAmount.toFixed(2)}
+                      $
+                      {totalAmount.toFixed(
+                        2
+                      )}
                     </span>
 
                   </div>
@@ -437,12 +653,15 @@ export default function Cart() {
                   </span>
 
                   <span className="font-serif text-xl">
-                    ${totalAmount.toFixed(2)}
+                    $
+                    {totalAmount.toFixed(
+                      2
+                    )}
                   </span>
 
                 </div>
 
-                {/* FLEXIBLE SPACE */}
+                {/* SPACE */}
 
                 <div className="flex-1 min-h-6" />
 
@@ -471,7 +690,12 @@ export default function Cart() {
                   "
                 >
                   Checkout
-                  <ArrowRight size={13} strokeWidth={1.5} />
+
+                  <ArrowRight
+                    size={13}
+                    strokeWidth={1.5}
+                  />
+
                 </button>
 
                 <p
@@ -484,7 +708,8 @@ export default function Cart() {
                     mt-4
                   "
                 >
-                  Complimentary Worldwide Shipping
+                  Complimentary Worldwide
+                  Shipping
                 </p>
 
               </div>
